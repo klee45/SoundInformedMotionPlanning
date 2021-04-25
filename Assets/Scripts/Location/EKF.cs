@@ -42,20 +42,25 @@ public class KalmanFilter : MonoBehaviour
         this.observationCovariance = SetupObservationCovariance();
     }
 
-    public void Step(float deltaTime)
+    public void Step(Observation observation, float deltaTime)
     {
+        this.observation = observation;
+
         pastStates.Add(state);
         pastObservations.Add(observation);
         pastPredictionErrors.Add(predictionError);
 
+        // Preliminary calculations
+        Matrix processJacobian = CalculateProcessJacobian(deltaTime);
+
         // Prediction step
         this.state = PredictState(deltaTime); // x
-        this.predictionError = PredictError(); // P
+        this.predictionError = PredictError(processJacobian); // P
 
         // Intermediate
-        Matrix processJacobian = CalculateProcessJacobian(deltaTime);
         Matrix observationJacobian = CalculateObservationJacobain();
-        Matrix observationJacobianTranposed = TransposeMatrix(observationJacobian);
+        Matrix observationJacobianTranposed = TransposeMatrix(
+            observationJacobian);
 
         // Update step
         Matrix residual = CalculateResidual(); // y
@@ -66,30 +71,22 @@ public class KalmanFilter : MonoBehaviour
             observationJacobian,
             residualCovariance); // K
 
-        this.state = UpdateState(gain, residual);
-        this.predictionError = UpdatePredictionError(gain);
+        this.state = UpdateState(
+            gain,
+            residual);
+        this.predictionError = UpdatePredictionError(
+            observationJacobian,
+            gain);
     }
 
     #region Getters
-    public State GetState()
-    {
-        return state;
-    }
+    public State GetState() { return state; }
+    public Observation GetCurrentObservation() { return observation; }
+    public Matrix GetPredictionError() { return predictionError; }
 
-    public List<State> GetStateHistory()
-    {
-        return pastStates;
-    }
-
-    public Observation GetCurrentObservation()
-    {
-        return observation;
-    }
-
-    public List<Observation> GetObservationHistory()
-    {
-        return pastObservations;
-    }
+    public List<State> GetStateHistory() { return pastStates; }
+    public List<Observation> GetObservationHistory() { return pastObservations; }
+    public List<Matrix> GetPredictionErrorHistory() { return pastPredictionErrors; }
     #endregion
 
     #region Initialization helpers
@@ -133,7 +130,7 @@ public class KalmanFilter : MonoBehaviour
 
     /// P = F * P * F.T + Q
     /// m x m * m x m * m x m + m x m = m x m
-    private Matrix PredictError()
+    private Matrix PredictError(Matrix processJacobian)
     {
         Matrix processJacobianTransposed = processJacobian.Duplicate();
         processJacobianTransposed.Transpose();
@@ -242,7 +239,7 @@ public class KalmanFilter : MonoBehaviour
 
     // P = (I - KH)P
     // (m x m - m x n * n x m) * m x m = m x m
-    private Matrix UpdatePredictionError(Matrix gain)
+    private Matrix UpdatePredictionError(Matrix observationJacobian, Matrix gain)
     {
         return (Matrix.Identity(m) - gain * observationJacobian) * predictionError;
     }
