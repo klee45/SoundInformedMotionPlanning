@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class SoundSource : MonoBehaviour, ICanDisable
+public abstract class EchoSource : MonoBehaviour, ICanDisable
 {
     [SerializeField]
     protected float strength;
@@ -53,7 +53,7 @@ public abstract class SoundSource : MonoBehaviour, ICanDisable
     {
         Vector3 pos = transform.localPosition;
 
-        SoundWave wave = WaveManager.instance.CreateWave();
+        EchoWave wave = WaveManager.instance.CreateWave();
         wave.Setup(this, Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.z), strength * 2);
         wave.transform.parent = this.transform;
     }
@@ -91,6 +91,6 @@ public abstract class SoundSource : MonoBehaviour, ICanDisable
         Echolocator.instance.AddToDisableList(this);
     }
 
-    public abstract PrimarySoundSource GetPrimarySource();
+    public abstract PrimaryEchoSource GetPrimarySource();
     protected abstract void PostRaycastSuccess(Wall wall);
 }

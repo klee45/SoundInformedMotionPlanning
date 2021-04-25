@@ -84,12 +84,12 @@ public class Echolocator : Singleton<Echolocator>
         disableList.Clear();
     }
 
-    public void AddWallCheck(Wall wall, SoundSource source)
+    public void AddWallCheck(Wall wall, EchoSource source)
     {
         wallChecks.Enqueue(new WallCheck(wall, source));
     }
 
-    public void AddDiffractionCheck(SecondarySource secondary, SoundSource source)
+    public void AddDiffractionCheck(SecondaryEchoSource secondary, EchoSource source)
     {
         diffractionChecks.Enqueue(new DiffractionCheck(secondary, source));
     }
@@ -97,8 +97,8 @@ public class Echolocator : Singleton<Echolocator>
     private readonly struct WallCheck
     {
         public readonly Wall wall;
-        public readonly SoundSource source;
-        public WallCheck(Wall wall, SoundSource source)
+        public readonly EchoSource source;
+        public WallCheck(Wall wall, EchoSource source)
         {
             this.wall = wall;
             this.source = source;
@@ -107,9 +107,9 @@ public class Echolocator : Singleton<Echolocator>
 
     private readonly struct DiffractionCheck
     {
-        public readonly SecondarySource secondary;
-        public readonly SoundSource source;
-        public DiffractionCheck(SecondarySource secondary, SoundSource source)
+        public readonly SecondaryEchoSource secondary;
+        public readonly EchoSource source;
+        public DiffractionCheck(SecondaryEchoSource secondary, EchoSource source)
         {
             this.secondary = secondary;
             this.source = source;

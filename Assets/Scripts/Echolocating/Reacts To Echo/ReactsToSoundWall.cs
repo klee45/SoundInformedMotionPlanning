@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ReactsToSoundWall : ReactsToSound
+public class ReactsToSoundWall : ReactsToEcho
 {
     private Wall wall;
 
@@ -11,7 +11,7 @@ public class ReactsToSoundWall : ReactsToSound
         this.wall = wall;
     }
 
-    public override void React(SoundSource source)
+    public override void React(EchoSource source)
     {
         wall.React(source);
     }

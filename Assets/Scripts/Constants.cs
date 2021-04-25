@@ -4,6 +4,20 @@ using UnityEngine;
 
 public class Constants : MonoBehaviour
 {
+    // Extended Kalman Fitler ---------------------------------------
+    public static class Kalman
+    {
+        public static readonly double[] PROCESS_COVARIANCE_DEFAULT = new List<double>
+        {// x_r   y_r   th_r  x_s   y_s   th_s  v_s   w_s
+            1e-2, 1e-2, 5e-1, 6e-2, 6e-2, 9e-1, 1e-2, 5e-1
+        }.ToArray();
+
+        public static readonly double[] OBSERVATION_COVARIANCE_DEFAULT = new List<double>
+        {// r_s   phi_s
+            1e-0, 1e-0
+        }.ToArray();
+    }
+
     // Layers -------------------------------------------------------
 
     public static class Layers

@@ -1,0 +1,2 @@
+Gaussian sampling
+https://gist.github.com/tansey/1444070

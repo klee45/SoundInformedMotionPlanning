@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PrimarySoundSource : SoundSource
+public class PrimaryEchoSource : EchoSource
 {
     [SerializeField]
     private NoisyGrid grid;
@@ -49,7 +49,7 @@ public class PrimarySoundSource : SoundSource
         grid.UpdateMap(wallX, wallZ, uncertainty);
     }
 
-    public override PrimarySoundSource GetPrimarySource()
+    public override PrimaryEchoSource GetPrimarySource()
     {
         return this;
     }

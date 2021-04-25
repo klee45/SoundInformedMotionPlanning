@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SoundWave : MonoBehaviour
+public class EchoWave : MonoBehaviour
 {
-    private SoundSource source;
+    private EchoSource source;
     private float size;
     private Renderer materialRenderer;
 
@@ -24,7 +24,7 @@ public class SoundWave : MonoBehaviour
         materialRenderer.material.color = new Color(c.r, c.g, c.b, 1 / opacityMod);
     }
 
-    public void Setup(SoundSource source, int x, int z, float size)
+    public void Setup(EchoSource source, int x, int z, float size)
     {
         this.source = source;
         transform.localPosition = new Vector3(x, 0, z);
@@ -49,6 +49,6 @@ public class SoundWave : MonoBehaviour
     public void OnTriggerEnter(Collider other)
     {
         //Debug.Log("Trigger enter with " + other.gameObject);
-        other.GetComponent<ReactsToSound>().React(source);
+        other.GetComponent<ReactsToEcho>().React(source);
     }
 }

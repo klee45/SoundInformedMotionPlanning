@@ -13,11 +13,11 @@ TagManager:
   - UI
   - 
   - 
-  - SourceOn
-  - SourceOff
+  - EchoSourceOn
+  - EchoSourceOff
   - WallOn
   - WallOff
-  - Sound
+  - Echo
   - WallRaycast
   - Player
   - 

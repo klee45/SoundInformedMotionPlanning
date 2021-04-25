@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SecondarySource : SoundSource
+public class SecondaryEchoSource : EchoSource
 {
-    private PrimarySoundSource initialSource;
+    private PrimaryEchoSource initialSource;
 
     protected override void Awake()
     {
@@ -12,11 +12,11 @@ public class SecondarySource : SoundSource
         int x = Mathf.RoundToInt(transform.localPosition.x);
         int z = Mathf.RoundToInt(transform.localPosition.z);
         this.name = string.Format("Secondary ({0}, {1})", x, z);
-        var react = gameObject.AddComponent<ReactsToSoundNode>();
+        var react = gameObject.AddComponent<ReactsToEchoNode>();
         react.Setup(this);
     }
 
-    public void React(SoundSource source)
+    public void React(EchoSource source)
     {
         if (!RaycastHelper(source.transform.localPosition, source.name, out RaycastHit hit))
         {
@@ -26,12 +26,12 @@ public class SecondarySource : SoundSource
         }
     }
 
-    public void CheckPathToSource(SoundSource source)
+    public void CheckPathToSource(EchoSource source)
     {
         SecondaryWave(source);
     }
 
-    public void SecondaryWave(SoundSource source)
+    public void SecondaryWave(EchoSource source)
     {
         float dist = (source.gameObject.transform.localPosition - transform.localPosition).magnitude;
         strength = source.GetStrength() - dist;
@@ -64,7 +64,7 @@ public class SecondarySource : SoundSource
         return GetBaseUncertainty(wall.GetX(), wall.GetZ()) / mod;
     }
 
-    public override PrimarySoundSource GetPrimarySource()
+    public override PrimaryEchoSource GetPrimarySource()
     {
         return initialSource;
     }

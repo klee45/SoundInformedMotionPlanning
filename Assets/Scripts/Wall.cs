@@ -24,7 +24,7 @@ public class Wall : MonoBehaviour, ICanDisable
     public int GetX() { return x; }
     public int GetZ() { return z; }
 
-    public void React(SoundSource source)
+    public void React(EchoSource source)
     {
         Echolocator.instance.AddWallCheck(this, source);
     }

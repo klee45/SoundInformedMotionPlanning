@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class ReactsToSound : MonoBehaviour
+public abstract class ReactsToEcho : MonoBehaviour
 {
-    public virtual void React(SoundSource source)
+    public virtual void React(EchoSource source)
     {
         Debug.Log("React!");
     }

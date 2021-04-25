@@ -5,7 +5,7 @@ using UnityEngine;
 public class WaveManager : Singleton<WaveManager>
 {
     [SerializeField]
-    private SoundWave waveObject;
+    private EchoWave waveObject;
 
     /*
     public static WaveManager instance;
@@ -22,8 +22,8 @@ public class WaveManager : Singleton<WaveManager>
     }
     */
 
-    public SoundWave CreateWave()
+    public EchoWave CreateWave()
     {
-        return Instantiate<SoundWave>(waveObject);
+        return Instantiate<EchoWave>(waveObject);
     }
 }
