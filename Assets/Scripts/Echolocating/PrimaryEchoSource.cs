@@ -35,18 +35,26 @@ public class PrimaryEchoSource : EchoSource
         return grid;
     }
 
+    protected override void Emit()
+    {
+        Vector3 pos = transform.localPosition;
+        grid.SetFree(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.z));
+
+        base.Emit();
+    }
+
     private IEnumerator Wait(float time)
     {
         yield return new WaitForSeconds(time);
         Emit();
     }
 
-    protected override void PostRaycastSuccess(Wall wall)
+    protected override void PostRaycastSuccess(TerrainTile terrain)
     {
-        int wallX = wall.GetX();
-        int wallZ = wall.GetZ();
-        float uncertainty = GetBaseUncertainty(wallX, wallZ);
-        grid.UpdateMap(wallX, wallZ, uncertainty);
+        int terrainX = terrain.GetX();
+        int terrainZ = terrain.GetZ();
+        float uncertainty = GetBaseUncertainty(terrainX, terrainZ);
+        grid.UpdateMap(terrain, uncertainty);
     }
 
     public override PrimaryEchoSource GetPrimarySource()

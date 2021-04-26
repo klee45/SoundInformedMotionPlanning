@@ -5,6 +5,12 @@ using UnityEngine;
 
 public class Constants : MonoBehaviour
 {
+    // Debug --------------------------------------------------------
+    public static class Debug
+    {
+        public static readonly bool SHOW_ECHOLOCATION_MESSAGES = false;
+    }
+
     // Extended Kalman Fitler ---------------------------------------
     public static class Kalman
     {
@@ -61,22 +67,22 @@ public class Constants : MonoBehaviour
         public const int SOURCE_ON = 8;
         public const int SOURCE_OFF = 9;
 
-        public const int WALL_ON = 10;
-        public const int WALL_OFF = 11;
+        public const int TERRAIN_ON = 10;
+        public const int TERRAIN_OFF = 11;
 
-        public const int WALL_RAYCAST = 13;
+        public const int TERRAIN_RAYCAST = 13;
     }
 
     // Values -------------------------------------------------------
     public static class Values
     {
-        public const float LEARNING_RATE = 0.5f;
+        public const float LEARNING_RATE = 5f;
 
         public const float FOUND_FREE = 0.2f;
         public const float FOUND_WALL = 0.8f;
 
         public const float ECHOLOCATE_RATE = 10f; // 1/10th of the total sets per update
-        public const int NOISY_MAP_RANGE = 2; // 5x5 range around hit
+        public const int NOISY_MAP_RANGE = 0; // 5x5 range around hit
 
         public const float WAVE_TIME = 1.5f;
         public const float ENABLE_TIME = 2.5f;
@@ -92,7 +98,9 @@ public class Constants : MonoBehaviour
         public static Color SOURCE_ON = Color.white;
         public static Color SOURCE_OFF = Color.gray;
 
-        public static Color WALL_ON = Color.white;
-        public static Color WALL_OFF = Color.gray;
+        private const float TERRAIN_OPACITY = 0.95f;
+        public static Color TERRAIN_ON = new Color(0.6f, 0.6f, 0.6f, TERRAIN_OPACITY);
+        public static Color TERRAIN_OFF = new Color(0.4f, 0.4f, 0.4f, TERRAIN_OPACITY);
+        public static Color TERRAIN_TOTAL_OFF = new Color(0.2f, 0.2f, 0.2f, TERRAIN_OPACITY);
     }
 }

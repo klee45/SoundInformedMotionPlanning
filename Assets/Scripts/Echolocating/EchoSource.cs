@@ -15,12 +15,11 @@ public abstract class EchoSource : MonoBehaviour, ICanDisable
         materialRenderer = GetComponent<Renderer>();
     }
 
-    public void RaycastFromWallToSelf(Wall wall)
+    public void RaycastFromTerrainToSelf(TerrainTile terrain)
     {
-        if (!RaycastHelper(wall.transform.localPosition, wall.name, out RaycastHit hit))
+        if (!RaycastHelper(terrain.transform.localPosition, terrain.name, out RaycastHit hit))
         {
-            wall.TurnOff();
-            PostRaycastSuccess(wall);
+            PostRaycastSuccess(terrain);
         }
     }
 
@@ -29,16 +28,22 @@ public abstract class EchoSource : MonoBehaviour, ICanDisable
         Vector3 direction = transform.localPosition - pos;
         //Debug.Log(direction);
 
-        int bitmap = (1 << Constants.Layers.WALL_ON | 1 << Constants.Layers.WALL_OFF);
+        int bitmap = (1 << Constants.Layers.TERRAIN_ON | 1 << Constants.Layers.TERRAIN_OFF);
 
         if (Physics.Raycast(pos, direction.normalized, out hit, direction.magnitude, bitmap))
         {
-            Debug.Log("Raycast to " + this.name + " from " + targetName + " hit " + hit.collider.name);
+            if (Constants.Debug.SHOW_ECHOLOCATION_MESSAGES)
+            {
+                Debug.Log("Raycast to " + this.name + " from " + targetName + " hit " + hit.collider.name);
+            }
             return true;
         }
         else
         {
-            Debug.Log("Raycast to " + this.name + " from " + targetName + " success");
+            if (Constants.Debug.SHOW_ECHOLOCATION_MESSAGES)
+            {
+                Debug.Log("Raycast to " + this.name + " from " + targetName + " success");
+            }
             return false;
         }
     }
@@ -71,7 +76,7 @@ public abstract class EchoSource : MonoBehaviour, ICanDisable
     {
         return strength;
     }
-
+    
     public void TurnOn()
     {
         StartCoroutine(DelayOn());
@@ -92,5 +97,5 @@ public abstract class EchoSource : MonoBehaviour, ICanDisable
     }
 
     public abstract PrimaryEchoSource GetPrimarySource();
-    protected abstract void PostRaycastSuccess(Wall wall);
+    protected abstract void PostRaycastSuccess(TerrainTile terrain);
 }

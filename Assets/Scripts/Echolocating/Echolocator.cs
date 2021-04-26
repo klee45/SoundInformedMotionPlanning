@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Echolocator : Singleton<Echolocator>
 {
-    private Queue<WallCheck> wallChecks;
+    private Queue<TerrainCheck> wallChecks;
     private Queue<DiffractionCheck> diffractionChecks;
 
     private List<ICanDisable> disableList;
@@ -16,7 +16,7 @@ public class Echolocator : Singleton<Echolocator>
 
     private void Start()
     {
-        wallChecks = new Queue<WallCheck>();
+        wallChecks = new Queue<TerrainCheck>();
         diffractionChecks = new Queue<DiffractionCheck>();
         disableList = new List<ICanDisable>();
     }
@@ -65,9 +65,9 @@ public class Echolocator : Singleton<Echolocator>
         }
     }
 
-    private void DoWallCheck(WallCheck wallCheck)
+    private void DoWallCheck(TerrainCheck terrainCheck)
     {
-        wallCheck.source.RaycastFromWallToSelf(wallCheck.wall);
+        terrainCheck.source.RaycastFromTerrainToSelf(terrainCheck.terrain);
     }
 
     private void DoDiffractionCheck(DiffractionCheck diffractionCheck)
@@ -84,9 +84,9 @@ public class Echolocator : Singleton<Echolocator>
         disableList.Clear();
     }
 
-    public void AddWallCheck(Wall wall, EchoSource source)
+    public void AddTerrainCheck(TerrainTile terrain, EchoSource source)
     {
-        wallChecks.Enqueue(new WallCheck(wall, source));
+        wallChecks.Enqueue(new TerrainCheck(terrain, source));
     }
 
     public void AddDiffractionCheck(SecondaryEchoSource secondary, EchoSource source)
@@ -94,13 +94,13 @@ public class Echolocator : Singleton<Echolocator>
         diffractionChecks.Enqueue(new DiffractionCheck(secondary, source));
     }
 
-    private readonly struct WallCheck
+    private readonly struct TerrainCheck
     {
-        public readonly Wall wall;
+        public readonly TerrainTile terrain;
         public readonly EchoSource source;
-        public WallCheck(Wall wall, EchoSource source)
+        public TerrainCheck(TerrainTile terrain, EchoSource source)
         {
-            this.wall = wall;
+            this.terrain = terrain;
             this.source = source;
         }
     }

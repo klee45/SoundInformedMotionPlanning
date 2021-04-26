@@ -58,7 +58,7 @@ public class SoundListener : MonoBehaviour
     {
         Vector3 robotPos = transform.localPosition;
 
-        transform.localPosition = new Vector3(robotPos.x, robotPos.y, robotPos.z - 0.5f);
+        //transform.localPosition = new Vector3(robotPos.x, robotPos.y, robotPos.z - 0.5f);
 
         double x_r = robotPos.x;
         double y_r = robotPos.z;
@@ -88,14 +88,14 @@ public class SoundListener : MonoBehaviour
             double xDiff = x_s - x_r;
             double yDiff = y_s - y_r;
 
-            //Debug.LogError(xDiff);
-            //Debug.LogError(yDiff);
+            //Debug.Log(xDiff);
+            //Debug.Log(yDiff);
 
             double realDist = Math.Sqrt(xDiff * xDiff + yDiff * yDiff);
             double realAngle = Math.Atan2(yDiff, xDiff);
 
-            //Debug.LogError("Dist: " + realDist);
-            //Debug.LogError("Angle: " + realAngle);
+            //Debug.Log("Dist: " + realDist);
+            //Debug.Log("Angle: " + realAngle);
 
             return new ExtendedKalmanFilter.Observation(
                 Gaussian.Sample(realDist, Constants.Kalman.DISTANCE_ERROR),

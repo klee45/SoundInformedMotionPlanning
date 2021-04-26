@@ -11,7 +11,7 @@ public class NoisyGrid : MonoBehaviour
     
     private void Start()
     {
-        grid = new float[WallContainer.instance.GetHeight(), WallContainer.instance.GetWidth()];
+        grid = new float[TerrainContainer.instance.GetWidth(), TerrainContainer.instance.GetHeight()];
 
         for (int z = 0; z < grid.GetLength(1); z++)
         {
@@ -26,6 +26,12 @@ public class NoisyGrid : MonoBehaviour
     public float GetCellValue(Point p)
     {
         return grid[p.x, p.z];
+    }
+
+    public void SetFree(int x, int z)
+    {
+        grid[x, z] = 0;
+        TerrainContainer.instance.GetTerrain(x, z).TurnOffPermanent();
     }
 
     public List<Point> GetWalkableAdjacentPoints(Point p)
@@ -53,19 +59,30 @@ public class NoisyGrid : MonoBehaviour
         return validPoints;
     }
 
-    public void UpdateMap(int x, int z, float uncertainty)
+    public void UpdateMap(TerrainTile terrain, float uncertainty)
     {
         int r = Constants.Values.NOISY_MAP_RANGE;
         for (int h = -r; h <= r; h++)
         {
             for (int w = -r; w <= r; w++)
             {
-                int xPos = x + w;
-                int zPos = z + h;
+                int xPos = terrain.GetX() + w;
+                int zPos = terrain.GetZ() + h;
                 if (IsValidTile(xPos, zPos))
                 {
-                    float diff = WallContainer.instance.GetTrue(xPos, zPos) - grid[xPos, zPos];
-                    grid[xPos, zPos] += diff * uncertainty * Constants.Values.LEARNING_RATE;
+                    float diff = TerrainContainer.instance.GetTrue(xPos, zPos) - grid[xPos, zPos];
+                    float increase = diff * uncertainty * Constants.Values.LEARNING_RATE;
+                    float result = grid[xPos, zPos] + increase;
+                    grid[xPos, zPos] = result.Clamp(0, 1);
+                    float val = grid[xPos, zPos];
+                    if (val <= Constants.Values.FOUND_FREE || val >= Constants.Values.FOUND_WALL)
+                    {
+                        terrain.TurnOffPermanent();
+                    }
+                    else
+                    {
+                        terrain.TurnOff();
+                    }
                 }
                 else
                 {
@@ -74,6 +91,10 @@ public class NoisyGrid : MonoBehaviour
             }
         }
         Redraw();
+        if (Constants.Debug.SHOW_ECHOLOCATION_MESSAGES)
+        {
+            Print();
+        }
         Print();
     }
 

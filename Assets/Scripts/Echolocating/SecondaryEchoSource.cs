@@ -9,9 +9,11 @@ public class SecondaryEchoSource : EchoSource
     protected override void Awake()
     {
         base.Awake();
+        /*
         int x = Mathf.RoundToInt(transform.localPosition.x);
         int z = Mathf.RoundToInt(transform.localPosition.z);
         this.name = string.Format("Secondary ({0}, {1})", x, z);
+        */
         var react = gameObject.AddComponent<ReactsToEchoNode>();
         react.Setup(this);
     }
@@ -41,27 +43,27 @@ public class SecondaryEchoSource : EchoSource
         }
     }
 
-    protected override void PostRaycastSuccess(Wall wall)
+    protected override void PostRaycastSuccess(TerrainTile terrain)
     {
-        int wallX = wall.GetX();
-        int wallZ = wall.GetZ();
-        float uncertainty = GetBaseUncertainty(wallX, wallZ);
-        uncertainty = UpdateUncertainty(uncertainty, wall);
-        initialSource.GetGrid().UpdateMap(wallX, wallZ, uncertainty);
+        int terrainX = terrain.GetX();
+        int terrainZ = terrain.GetZ();
+        float uncertainty = GetBaseUncertainty(terrainX, terrainZ);
+        uncertainty = UpdateUncertainty(uncertainty, terrain);
+        initialSource.GetGrid().UpdateMap(terrain, uncertainty);
     }
 
-    private float UpdateUncertainty(float uncertainty, Wall wall)
+    private float UpdateUncertainty(float uncertainty, TerrainTile terrain)
     {
-        Vector3 wallPos = wall.transform.localPosition;
+        Vector3 terrainPos = terrain.transform.localPosition;
         Vector3 mainSourcePos = initialSource.transform.localPosition;
-        Vector3 direction = mainSourcePos - wallPos;
-        Debug.Log(direction);
+        Vector3 direction = mainSourcePos - terrainPos;
+        //Debug.Log(direction);
 
-        int bitmap = (1 << Constants.Layers.WALL_ON | 1 << Constants.Layers.WALL_OFF);
+        int bitmap = (1 << Constants.Layers.TERRAIN_ON | 1 << Constants.Layers.TERRAIN_OFF);
 
-        RaycastHit[] hits = Physics.RaycastAll(wallPos, direction.normalized, direction.magnitude, bitmap);
+        RaycastHit[] hits = Physics.RaycastAll(terrainPos, direction.normalized, direction.magnitude, bitmap);
         float mod = Mathf.Pow(1 + hits.Length, 2);
-        return GetBaseUncertainty(wall.GetX(), wall.GetZ()) / mod;
+        return GetBaseUncertainty(terrain.GetX(), terrain.GetZ()) / mod;
     }
 
     public override PrimaryEchoSource GetPrimarySource()

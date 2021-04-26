@@ -1,2 +1,16 @@
-Gaussian sampling
+Gaussian sampling code
 https://gist.github.com/tansey/1444070
+
+C# Matrices code
+https://github.com/ahotko/MathExtended.Matrix
+
+
+A*
+https://en.wikipedia.org/wiki/A*_search_algorithm#Description
+
+Extended kalman filters
+https://www.cse.sc.edu/~terejanu/files/tutorialEKF.pdf
+https://simondlevy.academic.wlu.edu/kalman-tutorial/the-extended-kalman-filter-an-interactive-tutorial-for-non-experts-part-14/
+
+Tuning a kalman filter
+https://dsp.stackexchange.com/questions/31632/how-do-i-choose-the-parameters-of-a-kalman-filter
