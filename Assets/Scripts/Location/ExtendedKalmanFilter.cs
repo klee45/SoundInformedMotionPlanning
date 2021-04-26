@@ -4,7 +4,7 @@ using UnityEngine;
 using MathExtended.Matrices;
 using System;
 
-public class KalmanFilter : MonoBehaviour
+public class ExtendedKalmanFilter
 {
     private const int m = 8;
     private const int n = 2;
@@ -27,7 +27,7 @@ public class KalmanFilter : MonoBehaviour
     private List<Observation> pastObservations;
     private List<Matrix> pastPredictionErrors;
 
-    public KalmanFilter()
+    public ExtendedKalmanFilter()
     {
         pastStates = new List<State>();
         pastObservations = new List<Observation>();
@@ -42,7 +42,7 @@ public class KalmanFilter : MonoBehaviour
         this.observationCovariance = SetupObservationCovariance();
     }
 
-    public void Step(Observation observation, float deltaTime)
+    public void Step(Observation observation, double robotX, double robotY, double robotTheta, float deltaTime)
     {
         this.observation = observation;
 
@@ -53,23 +53,37 @@ public class KalmanFilter : MonoBehaviour
         // Preliminary calculations
         Matrix processJacobian = CalculateProcessJacobian(deltaTime);
 
+        //Debug.Log("State before prediction : " + state.ToString());
+        //Debug.Log("Prediction error before prediction :\n" + predictionError.ToString());
+
         // Prediction step
         this.state = PredictState(deltaTime); // x
         this.predictionError = PredictError(processJacobian); // P
 
+        //Debug.Log("State after prediction : " + state.ToString());
+        //Debug.Log("Prediction error after prediction :\n" + predictionError.ToString());
+
+        SetRobotPos(robotX, robotY, robotTheta);
+
         // Intermediate
         Matrix observationJacobian = CalculateObservationJacobain();
-        Matrix observationJacobianTranposed = TransposeMatrix(
+        Matrix observationJacobianTransposed = TransposeMatrix(
             observationJacobian);
+
+        //Debug.Log("Observation jacobian : " + observationJacobian.ToString());
 
         // Update step
         Matrix residual = CalculateResidual(); // y
+        //Debug.Log("Residual :\n" + residual.ToString());
         Matrix residualCovariance = CalculateResidualCovariance(
             observationJacobian,
-            observationJacobianTranposed); // S
+            observationJacobianTransposed); // S
+        //Debug.Log("Residual covariance :\n" + residualCovariance.ToString());
         Matrix gain = CalculateGain(
-            observationJacobian,
+            observationJacobianTransposed,
             residualCovariance); // K
+
+        //Debug.Log("Gain :\n" + gain.ToString());
 
         this.state = UpdateState(
             gain,
@@ -77,6 +91,18 @@ public class KalmanFilter : MonoBehaviour
         this.predictionError = UpdatePredictionError(
             observationJacobian,
             gain);
+
+        //Debug.Log("State after update : " + state.ToString());
+        //Debug.Log("Prediction error after update :\n" + predictionError.ToString());
+    }
+
+    private void SetRobotPos(double robotX, double robotY, double robotTheta)
+    {
+        Matrix mat = state.AsMatrix();
+        mat[1, 1] = robotX;
+        mat[2, 1] = robotY;
+        mat[3, 1] = robotTheta;
+        this.state = new State(mat);
     }
 
     #region Getters
@@ -88,12 +114,12 @@ public class KalmanFilter : MonoBehaviour
     public List<Observation> GetObservationHistory() { return pastObservations; }
     public List<Matrix> GetPredictionErrorHistory() { return pastPredictionErrors; }
     #endregion
-
+    
     #region Initialization helpers
     /// P
     private Matrix InitializePredictionError()
     {
-        return DiagonalMatrix(FillVector<double>(m, 1));
+        return DiagonalMatrix(FillVector<double>(m, 1000));
     }
 
     /// Q
@@ -125,9 +151,8 @@ public class KalmanFilter : MonoBehaviour
         return new State(robotPos.x, robotPos.y, th_r,
                          x_s, y_s, th_s,
                          v_s, w_s);
-
     }
-
+    
     /// P = F * P * F.T + Q
     /// m x m * m x m * m x m + m x m = m x m
     private Matrix PredictError(Matrix processJacobian)
@@ -144,23 +169,23 @@ public class KalmanFilter : MonoBehaviour
     private Matrix CalculateProcessJacobian(float deltaTime)
     {
         Matrix mat = new Matrix(m);
-        mat[3, 3] = 1; // d x_s / d x_s
-        mat[4, 4] = 1; // d y_s / d y_s
-        mat[5, 5] = 1; // d th_s / d th_s
+        mat[4, 4] = 1; // d x_s / d x_s
+        mat[5, 5] = 1; // d y_s / d y_s
+        mat[6, 6] = 1; // d th_s / d th_s
 
         double th_s = state.GetSourceOrientation();
         double v_s = state.GetSourceLinearVelocity();
 
-        mat[3, 5] = -deltaTime * Math.Sin(th_s) * v_s;
-        mat[3, 6] = deltaTime * Math.Cos(th_s);
+        mat[4, 6] = -deltaTime * Math.Sin(th_s) * v_s;
+        mat[4, 7] = deltaTime * Math.Cos(th_s);
 
-        mat[4, 5] = deltaTime * Math.Cos(th_s) * v_s;
-        mat[4, 6] = deltaTime * Math.Sin(th_s);
+        mat[5, 6] = deltaTime * Math.Cos(th_s) * v_s;
+        mat[5, 7] = deltaTime * Math.Sin(th_s);
 
-        mat[5, 7] = deltaTime;
+        mat[6, 8] = deltaTime;
         return mat;
     }
-
+    
     /// H
     private Matrix CalculateObservationJacobain()
     {
@@ -176,18 +201,18 @@ public class KalmanFilter : MonoBehaviour
         double dy = y_s - y_r;
         double dx_sqr = dx * dx;
         double dy_sqr = dy * dy;
+        
+        double alpha = Math.Sqrt(dx_sqr + dy_sqr);
+        double beta = dx * ((dy_sqr / dx_sqr) + 1);
 
-        double alpha = Math.Sqrt((float)dx_sqr + (float)dy_sqr);
-        double beta = dx * (dy_sqr / dx_sqr + 1);
-
-        mat[0, 0] = -dx / alpha;
-        mat[0, 1] = -dy / alpha;
-        mat[0, 3] = dx / alpha;
-        mat[0, 4] = dy / alpha;
-        mat[1, 0] = dy / (dx * beta);
-        mat[1, 1] = -1 / beta;
-        mat[1, 3] = -dy / (dx * beta);
-        mat[1, 4] = 1 / beta;
+        mat[1, 1] = -dx / alpha;
+        mat[1, 2] = -dy / alpha;
+        mat[1, 4] = dx / alpha;
+        mat[1, 5] = dy / alpha;
+        mat[2, 1] = dy / (dx * beta);
+        mat[2, 2] = -1 / beta;
+        mat[2, 4] = -dy / (dx * beta);
+        mat[2, 5] = 1 / beta;
         return mat;
     }
 
@@ -206,8 +231,8 @@ public class KalmanFilter : MonoBehaviour
         double dx = x_s - x_r;
         double dy = y_s - y_r;
 
-        mat[0, 0] = Math.Sqrt(dx * dx + dy * dy);
-        mat[1, 0] = Math.Atan2(dy, dx);
+        mat[1, 1] = this.observation.GetDistance() - Math.Sqrt(dx * dx + dy * dy);
+        mat[2, 1] = this.observation.GetAngle() - Math.Atan2(dy, dx);
         return mat;
     }
 
@@ -220,14 +245,19 @@ public class KalmanFilter : MonoBehaviour
 
     /// K = P * H.T * S^-1
     /// m x m * m x n * n x n = m x n
-    private Matrix CalculateGain(Matrix observationJacobian, Matrix residualCovariance)
+    private Matrix CalculateGain(Matrix observationJacobianTransposed, Matrix residualCovariance)
     {
         residualCovariance.Inverse();
-        return predictionError * observationJacobian * residualCovariance;
+
+        //Debug.LogError("Prediction error: " + MatrixDims(predictionError));
+        //Debug.LogError("Observation jacobian: " + MatrixDims(observationJacobianTransposed));
+        //Debug.LogError("Residual covariance: " + MatrixDims(residualCovariance));
+
+        return predictionError * observationJacobianTransposed * residualCovariance;
     }
 
     #endregion
-
+    
     #region Update
     // x = x + Ky
     // m x n * n x 1 = m x 1
@@ -262,13 +292,13 @@ public class KalmanFilter : MonoBehaviour
         {
             this.vals = vals;
         }
-
+        
         public Observation(Matrix m)
         {
-            vals = new double[m.Columns];
-            for (int i = 0; i < m.Columns; i++)
+            vals = new double[m.Rows];
+            for (int i = 0; i < m.Rows; i++)
             {
-                vals[i] = m[i, 0];
+                vals[i] = m[i + 1, 1];
             }
         }
 
@@ -277,7 +307,7 @@ public class KalmanFilter : MonoBehaviour
             Matrix m = new Matrix(vals.Length, 1);
             for (int i = 0; i < vals.Length; i++)
             {
-                m[i, 0] = vals[i];
+                m[i + 1, 1] = vals[i];
             }
             return m;
         }
@@ -320,10 +350,10 @@ public class KalmanFilter : MonoBehaviour
 
         public State(Matrix m)
         {
-            vals = new double[m.Columns];
-            for (int i = 0; i < m.Columns; i++)
+            vals = new double[m.Rows];
+            for (int i = 0; i < m.Rows; i++)
             {
-                vals[i] = m[i, 0];
+                vals[i] = m[i + 1, 1];
             }
         }
 
@@ -332,7 +362,7 @@ public class KalmanFilter : MonoBehaviour
             Matrix m = new Matrix(vals.Length, 1);
             for (int i = 0; i < vals.Length; i++)
             {
-                m[i, 0] = vals[i];
+                m[i + 1, 1] = vals[i];
             }
             return m;
         }
@@ -340,6 +370,16 @@ public class KalmanFilter : MonoBehaviour
         public double[] GetVals()
         {
             return vals;
+        }
+
+        public override string ToString()
+        {
+            string str = "";
+            foreach (double d in vals)
+            {
+                str += d + ", ";
+            }
+            return str;
         }
 
         public Vector2 GetRobotPos()
@@ -383,12 +423,13 @@ public class KalmanFilter : MonoBehaviour
     private static Matrix DiagonalMatrix(double[] v)
     {
         Matrix mat = new Matrix(v.Length);
-        for(int i = 0; i< v.Length; i++)
+        for(int i = 0; i < v.Length; i++)
         {
-            mat[i, i] = v[i];
+            mat[i + 1, i + 1] = v[i];
         }
         return mat;
     }
+
     private static T[] FillVector<T>(int size, T value)
     {
         T[] arr = new T[size];
@@ -398,11 +439,17 @@ public class KalmanFilter : MonoBehaviour
         }
         return arr;
     }
+
     private static Matrix TransposeMatrix(Matrix m)
     {
         Matrix temp = m.Duplicate();
         temp.Transpose();
         return temp;
+    }
+
+    private static string MatrixDims(Matrix m)
+    {
+        return string.Format("{0}, {1}", m.Rows, m.Columns);
     }
     #endregion
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SoundSourceManager : Singleton<SoundSourceManager>
 {
+    [SerializeField]
     private SoundSource currentSource;
 
     public void SetActiveSource(SoundSource source)
@@ -18,5 +19,11 @@ public class SoundSourceManager : Singleton<SoundSourceManager>
     public void RemoveActiveSource()
     {
         this.currentSource = null;
+    }
+
+    public bool TryGetActiveSource(out SoundSource source)
+    {
+        source = this.currentSource;
+        return currentSource != null;
     }
 }

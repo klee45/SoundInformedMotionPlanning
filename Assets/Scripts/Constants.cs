@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,15 +8,50 @@ public class Constants : MonoBehaviour
     // Extended Kalman Fitler ---------------------------------------
     public static class Kalman
     {
+        public const double X_SOURCE_START = 1;
+        public const double Y_SOURCE_START = 2;
+        public static readonly double THETA_SOURCE_START = 0;
+        public const double V_SOURCE_START = 0.5;
+        public const double W_SOURCE_START = 0;
+
+        public const double X_ROBOT_ERROR = 1e-1;
+        public const double Y_ROBOT_ERROR = 1e-1;
+        public static readonly double THETA_ROBOT_ERROR = ToRadian(15);
+
+        public const double X_SOURCE_ERROR = 5e-1;
+        public const double Y_SOURCE_ERROR = 5e-1;
+        public static readonly double THETA_SOURCE_ERROR = ToRadian(30);
+
+        public const double V_SOURCE_ERROR = 1e-1;
+        public static readonly double W_SOURCE_ERROR = ToRadian(15);
+
         public static readonly double[] PROCESS_COVARIANCE_DEFAULT = new List<double>
-        {// x_r   y_r   th_r  x_s   y_s   th_s  v_s   w_s
-            1e-2, 1e-2, 5e-1, 6e-2, 6e-2, 9e-1, 1e-2, 5e-1
+        {
+            X_ROBOT_ERROR * X_ROBOT_ERROR, // x_r
+            Y_ROBOT_ERROR * Y_ROBOT_ERROR, // y_r
+            THETA_ROBOT_ERROR * THETA_ROBOT_ERROR, // th_r
+
+            X_SOURCE_ERROR * X_SOURCE_ERROR, // x_s
+            Y_SOURCE_ERROR * Y_SOURCE_ERROR, // y_s
+            THETA_SOURCE_ERROR * THETA_SOURCE_ERROR, // th_s
+
+            V_SOURCE_ERROR * V_SOURCE_ERROR, // v_s
+            W_SOURCE_ERROR * W_SOURCE_ERROR, // w_s
         }.ToArray();
 
+        public const double DISTANCE_ERROR = 1e-0;
+        public static double ANGLE_ERROR = Math.Sqrt(15 * Math.PI / 180f);
+
         public static readonly double[] OBSERVATION_COVARIANCE_DEFAULT = new List<double>
-        {// r_s   phi_s
-            1e-0, 1e-0
+        {
+            DISTANCE_ERROR * DISTANCE_ERROR, // r_s
+            ANGLE_ERROR * ANGLE_ERROR, // phi_s
         }.ToArray();
+
+        private static double ToRadian(double degree)
+        {
+            return degree * Math.PI / 180f;
+        }
     }
 
     // Layers -------------------------------------------------------
