@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class TerrainTile : MonoBehaviour, ICanDisable
 {
-    private Renderer materialRenderer;
+    protected Renderer materialRenderer;
 
     private bool totalOff = false;
 
@@ -57,16 +57,15 @@ public abstract class TerrainTile : MonoBehaviour, ICanDisable
         gameObject.layer = Constants.Layers.TERRAIN_ON;
     }
 
-    private void SetColorOn()
-    {
-        materialRenderer.material.color = Constants.Colors.TERRAIN_ON;
-    }
+    protected abstract void SetColorOn();
+    protected abstract void SetColorOff();
+    protected abstract void SetColorOffPermanent();
 
     public void TurnOff()
     {
         if (!totalOff)
         {
-            materialRenderer.material.color = Constants.Colors.TERRAIN_OFF;
+            SetColorOff();
             gameObject.layer = Constants.Layers.TERRAIN_OFF;
             Echolocator.instance.AddToDisableList(this);
         }
@@ -74,7 +73,7 @@ public abstract class TerrainTile : MonoBehaviour, ICanDisable
 
     public void TurnOffPermanent()
     {
-        materialRenderer.material.color = Constants.Colors.TERRAIN_TOTAL_OFF;
+        SetColorOffPermanent();
         gameObject.layer = Constants.Layers.TERRAIN_OFF;
         totalOff = true;
     }

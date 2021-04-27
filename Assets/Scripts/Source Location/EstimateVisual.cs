@@ -25,6 +25,6 @@ public class EstimateVisual : MonoBehaviour
     public void UpdatePosition(ExtendedKalmanFilter.State state)
     {
         Vector2 pos = state.GetSourcePos();
-        transform.localPosition = new Vector3(pos.x, 0, pos.y);
+        transform.localPosition = new Vector3(pos.x, 0.5f, pos.y);
     }
 }

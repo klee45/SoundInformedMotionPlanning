@@ -5,10 +5,11 @@ using UnityEngine;
 public class GridVisualizer : MonoBehaviour
 {
     // Start is called before the first frame update
-    public void Draw(float[,] grid)
+    public void Draw(TerrainGrid grid)
     {
-        int width = grid.GetLength(1);
-        int height = grid.GetLength(0);
+        float[,] vals = grid.GetValues();
+        int width = vals.GetLength(1);
+        int height = vals.GetLength(0);
         Texture2D texture = new Texture2D(width, height);
         GetComponent<RectTransform>().sizeDelta = new Vector2(width, height);
         texture.filterMode = FilterMode.Point;
@@ -17,7 +18,7 @@ public class GridVisualizer : MonoBehaviour
         {
             for (int x = 0; x < width; x++)
             {
-                Color color = GetColorFromVal(grid[z, x]);
+                Color color = GetColorFromVal(vals[z, x]);
                 texture.SetPixel(x, height - z - 1, color);
                 //Debug.Log(string.Format("Setting pixel at {0} {1} and did color {2}", x, z, color));
             }

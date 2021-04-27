@@ -5,6 +5,9 @@ using UnityEngine;
 public class TerrainContainer : Singleton<TerrainContainer>
 {
     [SerializeField]
+    private TrueGrid grid;
+
+    [SerializeField]
     private GameObject floorContainer;
     [SerializeField]
     private GameObject wallContainer;
@@ -25,14 +28,13 @@ public class TerrainContainer : Singleton<TerrainContainer>
     [SerializeField]
     private TextAsset text;
 
-    private float[,] grid;
     private TerrainTile[,] terrain;
-    
+
     private void Start()
     {
         if (text == null)
         {
-            GenerateFromGameObjects();
+            //GenerateFromGameObjects();
         }
         else
         {
@@ -40,8 +42,30 @@ public class TerrainContainer : Singleton<TerrainContainer>
             GenerateFromText();
         }
 
-        Print();
+        grid.Print();
         visualizer.Draw(grid);
+
+        /*
+        Heap<string> h = new Heap<string>();
+        h.Add("a", 1);
+        h.Add("b", 5);
+        h.Add("c", 0);
+        h.Add("d", 10);
+        h.Add("e", 6);
+        h.Add("f", 9);
+        h.Add("g", 12);
+        h.Add("h", -1);
+        h.Add("i", 3);
+        h.Add("j", 5);
+
+        //h.Print();
+        while (h.HasValues())
+        {
+            Heap<string>.HeapPair<string> pair = h.Remove();
+            Debug.Log(string.Format("{0}: {1}", pair.GetItem(), pair.GetValue()));
+            //h.Print();
+        }
+        */
     }
 
     private void DisableInitialGameObjects()
@@ -58,6 +82,7 @@ public class TerrainContainer : Singleton<TerrainContainer>
         }
     }
 
+    /*
     private void GenerateFromGameObjects()
     {
         grid = new float[height, width];
@@ -68,6 +93,7 @@ public class TerrainContainer : Singleton<TerrainContainer>
             //this.terrain.Add(terrain);
         }
     }
+    */
 
     private void GenerateFromText()
     {
@@ -93,7 +119,7 @@ public class TerrainContainer : Singleton<TerrainContainer>
             }
             arr.Add(lst);
         }
-        grid = new float[width, height];
+        grid.InitializeSize(width, height);
         terrain = new TerrainTile[width, height];
         this.width = width;
         this.height = height;
@@ -130,7 +156,7 @@ public class TerrainContainer : Singleton<TerrainContainer>
                         tile = null;
                         break;
                 }
-                grid[x, z] = val;
+                grid.SetCellValue(x, z, val);
                 terrain[x, z] = tile;
             }
         }
@@ -174,22 +200,8 @@ public class TerrainContainer : Singleton<TerrainContainer>
         return terrain[x, z];
     }
 
-    public float GetTrue(int z, int x)
+    public TrueGrid GetGrid()
     {
-        return grid[z, x];
-    }
-
-    private void Print()
-    {
-        string str = "";
-        for (int z = 0; z < grid.GetLength(1); z++)
-        {
-            for (int x = 0; x < grid.GetLength(0); x++)
-            {
-                str += string.Format("{0}\t", grid[x, z] == 1 ? "O" : ".");
-            }
-            str += "\n\n";
-        }
-        Debug.Log(str);
+        return grid;
     }
 }

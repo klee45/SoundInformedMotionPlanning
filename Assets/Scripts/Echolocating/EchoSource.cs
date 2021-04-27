@@ -68,10 +68,12 @@ public abstract class EchoSource : MonoBehaviour, ICanDisable
         float xDiff = transform.localPosition.x - x;
         float zDiff = transform.localPosition.z - z;
         float dist = Mathf.Sqrt(xDiff * xDiff + zDiff * zDiff);
-        float uncertainty = 1 - Mathf.Max(0, (strength - dist)) / strength;
+        //Debug.Log(strength - dist);
+        float uncertainty = Mathf.Max((strength - dist) / strength, 0);
+        //float uncertainty = 1 - Mathf.Min(Mathf.Max(0, (strength - dist)) / strength, 1);
         return uncertainty;
     }
-
+    
     public float GetStrength()
     {
         return strength;

@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NoisyGrid : MonoBehaviour
+public class NoisyGrid : TerrainGrid
 {
     [SerializeField]
     private GridVisualizer visualizer;
-
-    private float[,] grid;
     
     private void Start()
     {
@@ -23,40 +21,10 @@ public class NoisyGrid : MonoBehaviour
         Redraw();
     }
 
-    public float GetCellValue(Point p)
-    {
-        return grid[p.x, p.z];
-    }
-
     public void SetFree(int x, int z)
     {
         grid[x, z] = 0;
         TerrainContainer.instance.GetTerrain(x, z).TurnOffPermanent();
-    }
-
-    public List<Point> GetWalkableAdjacentPoints(Point p)
-    {
-        List<Point> toCheck = new List<Point>
-        {
-            new Point(p.x - 1, p.z),
-            new Point(p.x + 1, p.z),
-            new Point(p.x, p.z - 1),
-            new Point(p.x, p.z + 1)
-        };
-
-        List<Point> validPoints = new List<Point>();
-
-        foreach (Point check in toCheck)
-        {
-            if (IsValidTile(check.x, check.x))
-            {
-                if (grid[check.x, check.z] <= Constants.Values.FOUND_FREE)
-                {
-                    validPoints.Add(check);
-                }
-            }
-        }
-        return validPoints;
     }
 
     public void UpdateMap(TerrainTile terrain, float uncertainty)
@@ -70,7 +38,7 @@ public class NoisyGrid : MonoBehaviour
                 int zPos = terrain.GetZ() + h;
                 if (IsValidTile(xPos, zPos))
                 {
-                    float diff = TerrainContainer.instance.GetTrue(xPos, zPos) - grid[xPos, zPos];
+                    float diff = TerrainContainer.instance.GetGrid().GetTrue(xPos, zPos) - grid[xPos, zPos];
                     float increase = diff * uncertainty * Constants.Values.LEARNING_RATE;
                     float result = grid[xPos, zPos] + increase;
                     grid[xPos, zPos] = result.Clamp(0, 1);
@@ -95,17 +63,11 @@ public class NoisyGrid : MonoBehaviour
         {
             Print();
         }
-        Print();
-    }
-
-    private bool IsValidTile(int x, int z)
-    {
-        return x >= 0 && z >= 0 && x < grid.GetLength(0) && z < grid.GetLength(1);
     }
 
     private void Redraw()
     {
-        visualizer.Draw(grid);
+        visualizer.Draw(this);
     }
 
     private void Print()

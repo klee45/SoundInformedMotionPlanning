@@ -22,14 +22,14 @@ public class Constants : MonoBehaviour
 
         public const double X_ROBOT_ERROR = 1e-1;
         public const double Y_ROBOT_ERROR = 1e-1;
-        public static readonly double THETA_ROBOT_ERROR = ToRadian(15);
+        public static readonly double THETA_ROBOT_ERROR = Helper.ToRadians(15);
 
         public const double X_SOURCE_ERROR = 5e-1;
         public const double Y_SOURCE_ERROR = 5e-1;
-        public static readonly double THETA_SOURCE_ERROR = ToRadian(30);
+        public static readonly double THETA_SOURCE_ERROR = Helper.ToRadians(30);
 
         public const double V_SOURCE_ERROR = 1e-1;
-        public static readonly double W_SOURCE_ERROR = ToRadian(15);
+        public static readonly double W_SOURCE_ERROR = Helper.ToRadians(15);
 
         public static readonly double[] PROCESS_COVARIANCE_DEFAULT = new List<double>
         {
@@ -53,11 +53,6 @@ public class Constants : MonoBehaviour
             DISTANCE_ERROR * DISTANCE_ERROR, // r_s
             ANGLE_ERROR * ANGLE_ERROR, // phi_s
         }.ToArray();
-
-        private static double ToRadian(double degree)
-        {
-            return degree * Math.PI / 180f;
-        }
     }
 
     // Layers -------------------------------------------------------
@@ -76,7 +71,7 @@ public class Constants : MonoBehaviour
     // Values -------------------------------------------------------
     public static class Values
     {
-        public const float LEARNING_RATE = 5f;
+        public const float LEARNING_RATE = 20f;
 
         public const float FOUND_FREE = 0.2f;
         public const float FOUND_WALL = 0.8f;
@@ -95,12 +90,21 @@ public class Constants : MonoBehaviour
         public static Color MAP_WALL = new Color(0.5f, 0, 0);
         public static Color MAP_FREE = new Color(0, 0.5f, 0);
 
-        public static Color SOURCE_ON = Color.white;
-        public static Color SOURCE_OFF = Color.gray;
+        private const float SOURCE_OPACITY = 0.2f;
+        public static Color SOURCE_ON = new Color(1, 1, 1, SOURCE_OPACITY);
+        public static Color SOURCE_OFF = new Color(0.5f, 0.5f, 0.5f, SOURCE_OPACITY);
 
         private const float TERRAIN_OPACITY = 0.95f;
-        public static Color TERRAIN_ON = new Color(0.6f, 0.6f, 0.6f, TERRAIN_OPACITY);
-        public static Color TERRAIN_OFF = new Color(0.4f, 0.4f, 0.4f, TERRAIN_OPACITY);
-        public static Color TERRAIN_TOTAL_OFF = new Color(0.2f, 0.2f, 0.2f, TERRAIN_OPACITY);
+        private const float TERRAIN_ON = 0.2f;
+        private const float TERRAIN_OFF = 0.1f;
+        private const float TERRAIN_TOTAL_OFF = 0.05f;
+
+        public static Color WALL_ON = new Color(TERRAIN_ON, TERRAIN_ON / 2, TERRAIN_ON / 2, TERRAIN_OPACITY);
+        public static Color WALL_OFF = new Color(TERRAIN_OFF, 0, 0, TERRAIN_OPACITY);
+        public static Color WALL_TOTAL_OFF = new Color(TERRAIN_TOTAL_OFF, 0, 0, TERRAIN_OPACITY);
+
+        public static Color FLOOR_ON = new Color(TERRAIN_ON / 2, TERRAIN_ON, TERRAIN_ON / 2, TERRAIN_OPACITY);
+        public static Color FLOOR_OFF = new Color(0, TERRAIN_OFF, 0, TERRAIN_OPACITY);
+        public static Color FLOOR_TOTAL_OFF = new Color(0, TERRAIN_TOTAL_OFF, 0, TERRAIN_OPACITY);
     }
 }

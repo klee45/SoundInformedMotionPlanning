@@ -8,7 +8,7 @@ public class EchoWave : MonoBehaviour
     private float size;
     private Renderer materialRenderer;
 
-    private const float opacityMod = 2f;
+    private const float opacityMod = 8f;
 
     [SerializeField]
     private float duration = Constants.Values.WAVE_TIME;

@@ -29,4 +29,9 @@ public readonly struct Point
     {
         return p.x == x && p.z == z;
     }
+
+    public override string ToString()
+    {
+        return string.Format("({0}, {1})", x, z);
+    }
 }
