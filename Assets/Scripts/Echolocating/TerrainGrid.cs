@@ -26,6 +26,9 @@ public class TerrainGrid : MonoBehaviour
         return grid;
     }
 
+    public int GetWidth() { return grid.GetLength(0); }
+    public int GetHeight() { return grid.GetLength(1); }
+
     public Point GetCloseFree(float x, float z)
     {
         int xClamp = Mathf.RoundToInt(x.Clamp(0, grid.GetLength(0) - 1));

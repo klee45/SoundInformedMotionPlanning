@@ -14,8 +14,6 @@ public class SoundListener : MonoBehaviour
 
     [SerializeField]
     private NoisyGrid grid;
-    [SerializeField]
-    private EstimateVisual estimate;
 
     private Queue<Point> currentPath;
 
@@ -26,18 +24,20 @@ public class SoundListener : MonoBehaviour
     private Vector3 positionAtMoveStart;
     private float timeAtMoveStart;
 
-    private ExtendedKalmanFilter ekf;
+    [SerializeField]
+    private GameObject ekfContainer;
+
+    private ExtendedKalmanFilter[] ekfs;
+    private ExtendedKalmanFilter bestEkf;
 
     private void Awake()
     {
-        this.ekf = new ExtendedKalmanFilter();
+        ekfs = ekfContainer.GetComponentsInChildren<ExtendedKalmanFilter>();
     }
 
     private void Start()
     {
         Vector3 pos = transform.localPosition;
-        Vector3 sourcePos;
-
         this.anglesAtMoveStart = this.transform.localEulerAngles;
         this.positionAtMoveStart = this.transform.localPosition;
         this.x = Mathf.RoundToInt(pos.x);
@@ -45,19 +45,13 @@ public class SoundListener : MonoBehaviour
 
         if (SoundSourceManager.instance.TryGetActiveSource(out SoundSource source))
         {
-            sourcePos = source.transform.localPosition;
-
-            ExtendedKalmanFilter.State state = new ExtendedKalmanFilter.State(
-                pos.x,
-                pos.z,
-                transform.localEulerAngles.y,
-                sourcePos.x,
-                sourcePos.z,
-                source.transform.localEulerAngles.y,
-                Constants.Kalman.V_SOURCE_START,
-                Constants.Kalman.W_SOURCE_START
-                );
-            this.ekf.Initialize(state);
+            foreach (ExtendedKalmanFilter ekf in ekfs)
+            {
+                int sourceX = UnityEngine.Random.Range(0, grid.GetWidth());
+                int sourceY = UnityEngine.Random.Range(0, grid.GetHeight());
+                ekf.Initialize(GenerateInitialState(source, sourceX, sourceY));
+            }
+            bestEkf = ekfs[0];
             StartCoroutine(DelayedPathPlanning(0.1f));
         }
         else
@@ -69,14 +63,30 @@ public class SoundListener : MonoBehaviour
         PathPlanner.instance.OnPathNotFound += TryPathPlanningAgain;
     }
 
+    private ExtendedKalmanFilter.State GenerateInitialState(SoundSource source, int sourceX, int sourceY)
+    {
+        Vector3 pos = transform.localPosition;
+
+        ExtendedKalmanFilter.State state = new ExtendedKalmanFilter.State(
+            pos.x,
+            pos.z,
+            transform.localEulerAngles.y,
+            sourceX,
+            sourceY,
+            source.transform.localEulerAngles.y,
+            Constants.Kalman.V_SOURCE_START,
+            Constants.Kalman.W_SOURCE_START
+            );
+        return state;
+    }
+
     // Update is called once per frame
     void Update()
     {
         if (stepTimer.Tick(Time.deltaTime, out float stepDeltaTime))
         {
             Step(stepDeltaTime);
-            ExtendedKalmanFilter.State state = ekf.GetState();
-            estimate.UpdatePosition(state);
+            ExtendedKalmanFilter.State state = bestEkf.GetState();
             /*
             Debug.Log(string.Format("{0}, {1}",
                 state.GetSourcePos().x,
@@ -121,7 +131,7 @@ public class SoundListener : MonoBehaviour
                 anglesAtMoveStart.z);
         }
 
-        Debug.Log(anglesAtMoveStart.y + " -> " + angle);
+        //Debug.Log(anglesAtMoveStart.y + " -> " + angle);
         this.transform.localEulerAngles = Vector3.Lerp(
             anglesAtMoveStart,
             new Vector3(0, angle, 0),
@@ -161,7 +171,7 @@ public class SoundListener : MonoBehaviour
     private IEnumerator DelayedPathPlanning(float time)
     {
         yield return new WaitForSeconds(time);
-        StartPathPlanning(ekf.GetState());
+        StartPathPlanning(bestEkf.GetState());
         yield return null;
     }
 
@@ -208,9 +218,22 @@ public class SoundListener : MonoBehaviour
             observation.GetDistance(),
             observation.GetAngle() * 180 / Math.PI));
         */
-        ekf.Step(observation, x_r, y_r, th_r, deltaTime);
+        float bestScore = Mathf.Infinity;
+        if (SoundSourceManager.instance.TryGetActiveSource(out SoundSource source))
+        {
+            foreach (var ekf in ekfs)
+            {
+                ekf.Step(observation, x_r, y_r, th_r, deltaTime);
+                float score = ekf.GetDist(source);
+                if (score < bestScore)
+                {
+                    bestScore = score;
+                    bestEkf = ekf;
+                }
+            }
+        }
     }
-
+    
     private ExtendedKalmanFilter.Observation ObserveSound()
     {
         if (SoundSourceManager.instance.TryGetActiveSource(out SoundSource source))

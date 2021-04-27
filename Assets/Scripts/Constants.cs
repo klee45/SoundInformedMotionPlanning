@@ -45,8 +45,8 @@ public class Constants : MonoBehaviour
             W_SOURCE_ERROR * W_SOURCE_ERROR, // w_s
         }.ToArray();
 
-        public const double DISTANCE_ERROR = 1e-0;
-        public static double ANGLE_ERROR = Math.Sqrt(15 * Math.PI / 180f);
+        public const double DISTANCE_ERROR = 5e-0;
+        public static double ANGLE_ERROR = Math.Sqrt(5 * Math.PI / 180f);
 
         public static readonly double[] OBSERVATION_COVARIANCE_DEFAULT = new List<double>
         {

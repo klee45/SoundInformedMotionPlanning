@@ -4,7 +4,7 @@ using UnityEngine;
 using MathExtended.Matrices;
 using System;
 
-public class ExtendedKalmanFilter
+public class ExtendedKalmanFilter : MonoBehaviour
 {
     private const int m = 8;
     private const int n = 2;
@@ -27,11 +27,14 @@ public class ExtendedKalmanFilter
     private List<Observation> pastObservations;
     private List<Matrix> pastPredictionErrors;
 
-    public ExtendedKalmanFilter()
+    private EstimateVisual visual;
+
+    private void Awake()
     {
         pastStates = new List<State>();
         pastObservations = new List<Observation>();
         pastPredictionErrors = new List<Matrix>();
+        visual = GetComponent<EstimateVisual>();
     }
 
     public void Initialize(State state)
@@ -92,8 +95,19 @@ public class ExtendedKalmanFilter
             observationJacobian,
             gain);
 
+        visual.UpdatePosition(state);
+
         //Debug.Log("State after update : " + state.ToString());
         //Debug.Log("Prediction error after update :\n" + predictionError.ToString());
+    }
+
+    public float GetDist(SoundSource source)
+    {
+        Vector2 guessPos = state.GetSourcePos();
+        Vector3 truePos = source.transform.localPosition;
+        float dx = truePos.x - guessPos.x;
+        float dz = truePos.z - guessPos.y; // Vector2 has x, y
+        return Mathf.Sqrt(dx * dx + dz * dz);
     }
 
     private void SetRobotPos(double robotX, double robotY, double robotTheta)
