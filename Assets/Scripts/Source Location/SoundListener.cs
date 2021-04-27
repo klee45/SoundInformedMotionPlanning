@@ -13,6 +13,13 @@ public class SoundListener : MonoBehaviour
     private float timeBeforePlanning;
 
     [SerializeField]
+    private float startStepTime = 5f;
+    [SerializeField]
+    private float minStepTime = 0.1f;
+    [SerializeField]
+    private float stepTimeDecrease = 0.5f;
+
+    [SerializeField]
     private NoisyGrid grid;
 
     private Queue<Point> currentPath;
@@ -37,6 +44,7 @@ public class SoundListener : MonoBehaviour
 
     private void Start()
     {
+        stepTimer.SetMaxTime(startStepTime);
         Vector3 pos = transform.localPosition;
         this.anglesAtMoveStart = this.transform.localEulerAngles;
         this.positionAtMoveStart = this.transform.localPosition;
@@ -87,6 +95,9 @@ public class SoundListener : MonoBehaviour
         {
             Step(stepDeltaTime);
             ExtendedKalmanFilter.State state = bestEkf.GetState();
+
+            stepTimer.SetMaxTime(Math.Max(minStepTime, stepTimer.GetMaxTime() - stepTimeDecrease));
+
             /*
             Debug.Log(string.Format("{0}, {1}",
                 state.GetSourcePos().x,
@@ -185,7 +196,10 @@ public class SoundListener : MonoBehaviour
         //Debug.LogWarning(string.Join(", ", path));
 
         currentPath = new Queue<Point>(path);
-        currentPath.Dequeue(); // Remove starting position
+        if (currentPath.Count > 0)
+        {
+            currentPath.Dequeue(); // Remove starting position
+        }
         PathPlanner.instance.DrawPath(path);
         StartCoroutine(DelayedPathPlanning(timeBeforePlanning));
         //StartPathPlanning(ekf.GetState());

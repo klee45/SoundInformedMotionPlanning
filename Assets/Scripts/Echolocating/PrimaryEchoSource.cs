@@ -6,6 +6,8 @@ public class PrimaryEchoSource : EchoSource
 {
     [SerializeField]
     private NoisyGrid grid;
+    [SerializeField]
+    private float timeBetweenScans = 1f;
 
     private float delay = 1f;
 
@@ -25,7 +27,7 @@ public class PrimaryEchoSource : EchoSource
         delay -= Time.deltaTime;
         if (delay <= 0)
         {
-            delay = Constants.Values.ENABLE_TIME + 1.0f + delay;
+            delay = timeBetweenScans + delay;
             Emit();
         }
     }

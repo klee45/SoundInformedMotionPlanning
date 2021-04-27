@@ -164,7 +164,10 @@ public class PathPlanner : Singleton<PathPlanner>
             totalPath.Add(current);
         }
         totalPath.Reverse();
-        totalPath.RemoveAt(totalPath.Count - 1);
+        if (totalPath.Count > 0)
+        {
+            totalPath.RemoveAt(totalPath.Count - 1);
+        }
         return totalPath;
     }
 }

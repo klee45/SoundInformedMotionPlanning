@@ -45,8 +45,8 @@ public class Constants : MonoBehaviour
             W_SOURCE_ERROR * W_SOURCE_ERROR, // w_s
         }.ToArray();
 
-        public const double DISTANCE_ERROR = 5e-0;
-        public static double ANGLE_ERROR = Math.Sqrt(5 * Math.PI / 180f);
+        public const double DISTANCE_ERROR = 2e-0;
+        public static double ANGLE_ERROR = Math.Sqrt(2 * Math.PI / 180f);
 
         public static readonly double[] OBSERVATION_COVARIANCE_DEFAULT = new List<double>
         {
@@ -76,11 +76,11 @@ public class Constants : MonoBehaviour
         public const float FOUND_FREE = 0.2f;
         public const float FOUND_WALL = 0.8f;
 
-        public const float ECHOLOCATE_RATE = 10f; // 1/10th of the total sets per update
+        public const float ECHOLOCATE_RATE = 2f; // 1/10th of the total sets per update
         public const int NOISY_MAP_RANGE = 0; // 5x5 range around hit
 
-        public const float WAVE_TIME = 1.5f;
-        public const float ENABLE_TIME = 2.5f;
+        public const float WAVE_TIME = 0.5f;
+        public const float ENABLE_TIME = 1.0f;
     }
 
     // Colors -------------------------------------------------------

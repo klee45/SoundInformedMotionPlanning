@@ -807,6 +807,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   strength: 8
   grid: {fileID: 633132286}
+  timeBetweenScans: 1.5
 --- !u!114 &633132286
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -834,9 +835,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stepTimer: {fileID: 1299631086}
   moveTimer: {fileID: 1507519820}
-  timeBeforePlanning: 0.5
+  timeBeforePlanning: 0.25
+  startStepTime: 0.5
+  minStepTime: 0.2
+  stepTimeDecrease: 0.01
   grid: {fileID: 633132286}
-  estimate: {fileID: 1566250369}
+  ekfContainer: {fileID: 1944804392}
 --- !u!65 &633132288
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1254,7 +1258,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 932a29e2f3f142848bdb584b0c3a9a0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxTime: 0.5
+  maxTime: 0.1
   currentTime: 0
   running: 1
   doesReset: 1
@@ -1681,7 +1685,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 932a29e2f3f142848bdb584b0c3a9a0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxTime: 1
+  maxTime: 0.25
   currentTime: 0
   running: 1
   doesReset: 1

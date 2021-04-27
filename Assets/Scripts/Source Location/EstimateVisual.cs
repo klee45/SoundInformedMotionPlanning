@@ -19,7 +19,7 @@ public class EstimateVisual : MonoBehaviour
         transform.localScale = new Vector3(size, transform.localScale.y, size);
         materialRenderer.enabled = true;
         Color c = materialRenderer.material.color;
-        materialRenderer.material.color = new Color(1, 0, 0, 0.1f);
+        materialRenderer.material.color = new Color(0.3f, 0.3f, 1.0f, 0.2f);
     }
 
     public void UpdatePosition(ExtendedKalmanFilter.State state)

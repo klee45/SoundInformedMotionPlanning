@@ -43,6 +43,7 @@ public class ExtendedKalmanFilter : MonoBehaviour
         this.state = state;
         this.processCovariance = SetupProcessCovariance();
         this.observationCovariance = SetupObservationCovariance();
+        visual.UpdatePosition(state);
     }
 
     public void Step(Observation observation, double robotX, double robotY, double robotTheta, float deltaTime)
