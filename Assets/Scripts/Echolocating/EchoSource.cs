@@ -48,7 +48,7 @@ public abstract class EchoSource : MonoBehaviour, ICanDisable
         }
     }
 
-    protected virtual void Emit()
+    public virtual void Emit()
     {
         gameObject.layer = Constants.Layers.SOURCE_OFF;
         EmitHelper();

@@ -11,7 +11,7 @@ public class SoundSourceManager : Singleton<SoundSourceManager>
     {
         if (this.currentSource != null)
         {
-            Debug.LogWarning("Replacing " + this.currentSource.name);
+            Debug.Log("Replacing " + this.currentSource.name);
         }
         this.currentSource = source;
     }

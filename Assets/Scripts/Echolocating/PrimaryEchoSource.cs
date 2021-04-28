@@ -48,7 +48,7 @@ public class PrimaryEchoSource : EchoSource
         return grid;
     }
 
-    protected override void Emit()
+    public override void Emit()
     {
         echoSound.Play();
         Vector3 pos = transform.localPosition;

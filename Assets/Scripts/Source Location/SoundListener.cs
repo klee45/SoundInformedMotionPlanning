@@ -48,6 +48,7 @@ public class SoundListener : MonoBehaviour
     private ExtendedKalmanFilter bestEkf;
 
     private bool isActive = false;
+    private bool canMove = false;
     private bool isMoving = false;
 
     private float speed;
@@ -79,6 +80,19 @@ public class SoundListener : MonoBehaviour
         this.x = Mathf.RoundToInt(pos.x);
         this.z = Mathf.RoundToInt(pos.z);
 
+        StartPathPlanning();
+
+        PathPlanner.instance.OnPathFound += GetPath;
+        PathPlanner.instance.OnPathNotFound += TryPathPlanningAgain;
+    }
+
+    public void AllowMovement()
+    {
+        canMove = true;
+    }
+
+    public void StartPathPlanning()
+    {
         if (SoundSourceManager.instance.TryGetActiveSource(out SoundSource source))
         {
             foreach (ExtendedKalmanFilter ekf in ekfs)
@@ -92,11 +106,8 @@ public class SoundListener : MonoBehaviour
         }
         else
         {
-            Debug.LogError("No sound source assigned as active");
+            Debug.Log("No sound source assigned as active");
         }
-
-        PathPlanner.instance.OnPathFound += GetPath;
-        PathPlanner.instance.OnPathNotFound += TryPathPlanningAgain;
     }
 
     private ExtendedKalmanFilter.State GenerateInitialState(SoundSource source, int sourceX, int sourceY)
@@ -129,18 +140,21 @@ public class SoundListener : MonoBehaviour
 
             if (currentPath != null)
             {
-                if (moveTimer.Tick(Time.deltaTime, out float moveDeltaTime))
+                if (canMove)
                 {
-                    if (TryMove())
+                    if (moveTimer.Tick(Time.deltaTime, out float moveDeltaTime))
                     {
-                        timeAtMoveStart = Time.time;
-                        positionAtMoveStart = this.transform.localPosition;
-                        anglesAtMoveStart = this.transform.localEulerAngles;
-                        isMoving = true;
-                    }
-                    else
-                    {
-                        isMoving = false;
+                        if (TryMove())
+                        {
+                            timeAtMoveStart = Time.time;
+                            positionAtMoveStart = this.transform.localPosition;
+                            anglesAtMoveStart = this.transform.localEulerAngles;
+                            isMoving = true;
+                        }
+                        else
+                        {
+                            isMoving = false;
+                        }
                     }
                 }
             }
@@ -253,7 +267,10 @@ public class SoundListener : MonoBehaviour
         {
             currentPath.Dequeue(); // Remove starting position
         }
-        PathPlanner.instance.DrawPath(path, grid);
+        if (isActive)
+        {
+            PathPlanner.instance.DrawPath(path, grid);
+        }
         StartCoroutine(DelayedPathPlanning(timeBeforePlanning));
         //StartPathPlanning(ekf.GetState());
     }

@@ -19,6 +19,8 @@ public abstract class TerrainTile : MonoBehaviour, ICanDisable
         react.Setup(this);
     }
 
+    public abstract Vector3 GetLevelHeight();
+
     private void Start()
     {
         if (Constants.Debug.DO_COLOR_WALLS)

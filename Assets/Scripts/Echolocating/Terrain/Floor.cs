@@ -43,4 +43,9 @@ public class Floor : TerrainTile
     {
         return Constants.Layers.FLOOR_OFF;
     }
+
+    public override Vector3 GetLevelHeight()
+    {
+        return transform.localPosition + new Vector3(0, 0.5f, 0);
+    }
 }

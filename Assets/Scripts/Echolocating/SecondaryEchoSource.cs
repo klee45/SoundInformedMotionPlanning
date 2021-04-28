@@ -54,7 +54,7 @@ public class SecondaryEchoSource : EchoSource
 
     private float UpdateUncertainty(float uncertainty, TerrainTile terrain)
     {
-        Vector3 terrainPos = terrain.transform.localPosition;
+        Vector3 terrainPos = terrain.GetLevelHeight();
         Vector3 mainSourcePos = initialSource.transform.localPosition;
         Vector3 direction = mainSourcePos - terrainPos;
         //Debug.Log(direction);

@@ -44,6 +44,11 @@ public class Wall : TerrainTile
         return Constants.Layers.WALL_OFF;
     }
 
+    public override Vector3 GetLevelHeight()
+    {
+        return transform.localPosition;
+    }
+
     /*
     protected override void React(EchoSource source)
     {

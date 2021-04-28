@@ -12,6 +12,20 @@ public class Controller : MonoBehaviour
     private Animator robotAnimator;
 
     [SerializeField]
+    private GameObject testingSoundSource;
+    [SerializeField]
+    private GameObject audioListener;
+
+    [SerializeField]
+    private GameObject playerObject;
+
+    [SerializeField]
+    private Camera firstCamera;
+
+    [SerializeField]
+    private GameObject electricFence;
+
+    [SerializeField]
     private GameObject globalLightContainer;
     [SerializeField]
     private GameObject localLightContainer;
@@ -21,29 +35,51 @@ public class Controller : MonoBehaviour
     {
         if (Input.GetKeyDown("1"))
         {
-            print("Turning off global lighting");
-            StartCoroutine(TurnDownLighting());
+            SoundSourceManager.instance.SetActiveSource(testingSoundSource.GetComponent<SoundSource>());
+            echoSource.Emit();
         }
 
         if (Input.GetKeyDown("2"))
         {
-            print("Activating robot");
-            echoSource.Activate(true);
             listener.Activate(true);
+            firstCamera.orthographicSize += 2;
         }
 
         if (Input.GetKeyDown("3"))
+        {
+            listener.Activate(false);
+            audioListener.transform.parent = playerObject.transform;
+            audioListener.transform.localPosition = Vector3.zero;
+            firstCamera.enabled = false;
+        }
+
+        if (Input.GetKeyDown("4"))
+        {
+            SoundSourceManager.instance.RemoveActiveSource();
+            SoundSourceManager.instance.SetActiveSource(playerObject.GetComponent<SoundSource>());
+            print("Turning off global lighting");
+            StartCoroutine(TurnDownLighting());
+            electricFence.SetActive(false);
+            echoSource.Activate(true);
+            listener.Activate(true);
+            listener.AllowMovement();
+            print("Activating robot");
+        }
+
+        if (Input.GetKeyDown("5"))
         {
             Debug.Log("Deactivating robot and turning lights back on");
             echoSource.Activate(false);
             listener.Activate(false);
             robotAnimator.SetFloat("speed", 0);
             StartCoroutine(TurnUpLighting());
+            electricFence.SetActive(true);
         }
     }
 
     private IEnumerator TurnDownLighting()
     {
+        yield return new WaitForSeconds(1f);
         globalLightContainer.SetActive(false);
         localLightContainer.SetActive(false);
         yield return new WaitForSeconds(2f);
