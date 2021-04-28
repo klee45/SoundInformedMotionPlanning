@@ -28,7 +28,7 @@ public abstract class EchoSource : MonoBehaviour, ICanDisable
         Vector3 direction = transform.localPosition - pos;
         //Debug.Log(direction);
 
-        int bitmap = (1 << Constants.Layers.TERRAIN_ON | 1 << Constants.Layers.TERRAIN_OFF);
+        int bitmap = (1 << Constants.Layers.WALL_ON | 1 << Constants.Layers.WALL_OFF);
 
         if (Physics.Raycast(pos, direction.normalized, out hit, direction.magnitude, bitmap))
         {
@@ -69,7 +69,7 @@ public abstract class EchoSource : MonoBehaviour, ICanDisable
         float zDiff = transform.localPosition.z - z;
         float dist = Mathf.Sqrt(xDiff * xDiff + zDiff * zDiff);
         //Debug.Log(strength - dist);
-        float uncertainty = Mathf.Max((strength - dist) / strength, 0);
+        float uncertainty = Mathf.Max((strength - dist) / GetPrimarySource().strength, 0);
         //float uncertainty = 1 - Mathf.Min(Mathf.Max(0, (strength - dist)) / strength, 1);
         return uncertainty;
     }
@@ -86,7 +86,7 @@ public abstract class EchoSource : MonoBehaviour, ICanDisable
 
     private IEnumerator DelayOn()
     {
-        yield return new WaitForSeconds(Constants.Values.ENABLE_TIME);
+        yield return new WaitForSeconds(Constants.Values.TERRAIN_DISABLED_DURATION);
         gameObject.layer = Constants.Layers.SOURCE_ON;
         materialRenderer.material.color = Constants.Colors.SOURCE_ON;
     }

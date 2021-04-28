@@ -8,9 +8,9 @@ public class EchoWave : MonoBehaviour
     private float size;
     private Renderer materialRenderer;
 
-    private const float opacityMod = 14f;
+    private const float opacityMod = 7f;
 
-    private float duration = Constants.Values.WAVE_TIME;
+    private float duration = Constants.Values.WAVE_DURATION;
 
     private void Awake()
     {
@@ -28,7 +28,7 @@ public class EchoWave : MonoBehaviour
         this.source = source;
         transform.localPosition = new Vector3(x, 0, z);
         this.size = size;
-        transform.localScale = new Vector3(size, 0.1f, size);
+        transform.localScale= new Vector3(size, 0.2f, size);
     }
 
     void Update()
@@ -41,7 +41,7 @@ public class EchoWave : MonoBehaviour
         }
         else
         {
-            materialRenderer.material.color = new Color(c.r, c.g, c.b, duration / Constants.Values.WAVE_TIME / opacityMod);
+            materialRenderer.material.color = new Color(c.r, c.g, c.b, duration / Constants.Values.WAVE_DURATION / opacityMod);
         }
     }
 

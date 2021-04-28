@@ -20,11 +20,11 @@ TagManager:
   - Echo
   - WallRaycast
   - Player
-  - 
-  - 
-  - 
-  - 
-  - 
+  - ZombieTop
+  - FloorOn
+  - FloorOff
+  - Ceiling
+  - Props
   - 
   - 
   - 

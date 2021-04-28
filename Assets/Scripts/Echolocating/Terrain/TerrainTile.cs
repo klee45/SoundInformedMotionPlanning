@@ -21,7 +21,14 @@ public abstract class TerrainTile : MonoBehaviour, ICanDisable
 
     private void Start()
     {
-        SetColorOn();
+        if (Constants.Debug.DO_COLOR_WALLS)
+        {
+            SetColorOn();
+        }
+        else
+        {
+            SetDefaultColor();
+        }
         DefinePosition();
     }
 
@@ -52,29 +59,42 @@ public abstract class TerrainTile : MonoBehaviour, ICanDisable
 
     private IEnumerator DelayOn()
     {
-        yield return new WaitForSeconds(Constants.Values.ENABLE_TIME);
-        SetColorOn();
-        gameObject.layer = Constants.Layers.TERRAIN_ON;
+        yield return new WaitForSeconds(Constants.Values.TERRAIN_DISABLED_DURATION);
+        if (Constants.Debug.DO_COLOR_WALLS)
+        {
+            SetColorOn();
+        }
+        gameObject.layer = SetLayerOn();
     }
 
+    protected abstract void SetDefaultColor();
     protected abstract void SetColorOn();
     protected abstract void SetColorOff();
     protected abstract void SetColorOffPermanent();
+
+    protected abstract int SetLayerOn();
+    protected abstract int SetLayerOff();
 
     public void TurnOff()
     {
         if (!totalOff)
         {
-            SetColorOff();
-            gameObject.layer = Constants.Layers.TERRAIN_OFF;
+            if (Constants.Debug.DO_COLOR_WALLS)
+            {
+                SetColorOff();
+            }
+            gameObject.layer = SetLayerOff();
             Echolocator.instance.AddToDisableList(this);
         }
     }
 
     public void TurnOffPermanent()
     {
-        SetColorOffPermanent();
-        gameObject.layer = Constants.Layers.TERRAIN_OFF;
+        if (Constants.Debug.DO_COLOR_WALLS)
+        {
+            SetColorOffPermanent();
+        }
+        gameObject.layer = SetLayerOff();
         totalOff = true;
     }
 }

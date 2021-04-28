@@ -8,16 +8,12 @@ public class Player : MonoBehaviour
     private float speed;
 
     private Rigidbody rigidBody;
+    private Animator animator;
 
     private void Awake()
     {
         rigidBody = GetComponent<Rigidbody>();
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+        animator = GetComponentInChildren<Animator>();
     }
 
     // Update is called once per frame
@@ -30,7 +26,11 @@ public class Player : MonoBehaviour
         float v = Input.GetAxis("Vertical");
 
         Vector3 tempVect = new Vector3(h, 0, v);
+
+        animator.SetFloat("speed", tempVect.magnitude);
+
         tempVect = tempVect.normalized * speed * Time.deltaTime;
+        tempVect = Quaternion.AngleAxis(transform.localEulerAngles.y, Vector3.up) * tempVect;
 
         rigidBody.MovePosition(rigidBody.transform.position + tempVect);
     }

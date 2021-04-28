@@ -32,9 +32,11 @@ public class TerrainContainer : Singleton<TerrainContainer>
 
     private void Start()
     {
-        if (text == null)
+        if (floorContainer.transform.childCount > 0 ||
+            wallContainer.transform.childCount > 0 ||
+            secondaryEchoSourceContainer.transform.childCount > 0)
         {
-            //GenerateFromGameObjects();
+            GenerateFromGameObjects();
         }
         else
         {
@@ -82,18 +84,17 @@ public class TerrainContainer : Singleton<TerrainContainer>
         }
     }
 
-    /*
     private void GenerateFromGameObjects()
     {
-        grid = new float[height, width];
-        foreach (Transform child in transform)
+        terrain = new TerrainTile[width, height];
+        grid.InitializeSize(width, height);
+        foreach (TerrainTile tile in GetComponentsInChildren<TerrainTile>())
         {
-            TerrainTile terrain = child.GetComponent<TerrainTile>();
-            grid[terrain.GetX(), terrain.GetZ()] = terrain.GetValue();
+            terrain[tile.GetX(), tile.GetZ()] = tile;
+            grid.SetCellValue(tile.GetX(), tile.GetZ(), tile.GetValue());
             //this.terrain.Add(terrain);
         }
     }
-    */
 
     private void GenerateFromText()
     {
@@ -104,7 +105,7 @@ public class TerrainContainer : Singleton<TerrainContainer>
         int height = lines.Length;
         for (int i = height - 1; i >= 0; i--)
         {
-            string[] characters = lines[i].Split(' ');
+            string[] characters = lines[i].Split('\t');
             int length = characters.Length;
 
             List<int> lst = new List<int>();

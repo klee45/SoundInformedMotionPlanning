@@ -17,3 +17,10 @@ https://simondlevy.academic.wlu.edu/kalman-tutorial/the-extended-kalman-filter-a
 
 Tuning a kalman filter
 https://dsp.stackexchange.com/questions/31632/how-do-i-choose-the-parameters-of-a-kalman-filter
+
+Echolocation inspiration
+https://www.nature.com/articles/nphoton.2015.234.pdf
+
+Textures
+Wall texture
+https://assetstore.unity.com/packages/2d/textures-materials/sc-fi-wall-damaged-28758

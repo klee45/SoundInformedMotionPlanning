@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class SoundListener : MonoBehaviour
@@ -13,11 +14,20 @@ public class SoundListener : MonoBehaviour
     private float timeBeforePlanning;
 
     [SerializeField]
+    private float minTimeMod = 0.7f;
+    [SerializeField]
+    private float timeDecreasePerSec = 0.95f;
+
+    /*
+    [SerializeField]
     private float startStepTime = 5f;
     [SerializeField]
     private float minStepTime = 0.1f;
     [SerializeField]
     private float stepTimeDecrease = 0.5f;
+    */
+
+    private Animator animator;
 
     [SerializeField]
     private NoisyGrid grid;
@@ -37,14 +47,32 @@ public class SoundListener : MonoBehaviour
     private ExtendedKalmanFilter[] ekfs;
     private ExtendedKalmanFilter bestEkf;
 
+    private bool isActive = false;
+    private bool isMoving = false;
+
+    private float speed;
+    private float startingTime;
+    private float timeMod = 1.0f;
+
     private void Awake()
     {
         ekfs = ekfContainer.GetComponentsInChildren<ExtendedKalmanFilter>();
+        animator = GetComponentInChildren<Animator>();
+    }
+
+    public void Activate(bool val)
+    {
+        this.isActive = val;
     }
 
     private void Start()
     {
-        stepTimer.SetMaxTime(startStepTime);
+        speed = 0;
+        startingTime = Time.time;
+
+        //stepTimer.SetMaxTime(startStepTime);
+        stepTimer.SetMaxTime(Constants.Timing.STEP_TIME);
+        moveTimer.SetMaxTime(Constants.Timing.MOVE_TIME);
         Vector3 pos = transform.localPosition;
         this.anglesAtMoveStart = this.transform.localEulerAngles;
         this.positionAtMoveStart = this.transform.localPosition;
@@ -91,58 +119,83 @@ public class SoundListener : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (stepTimer.Tick(Time.deltaTime, out float stepDeltaTime))
+        if (isActive)
         {
-            Step(stepDeltaTime);
-            ExtendedKalmanFilter.State state = bestEkf.GetState();
-
-            stepTimer.SetMaxTime(Math.Max(minStepTime, stepTimer.GetMaxTime() - stepTimeDecrease));
-
-            /*
-            Debug.Log(string.Format("{0}, {1}",
-                state.GetSourcePos().x,
-                state.GetSourcePos().y));
-            */
-        }
-        
-        if (currentPath != null)
-        {
-            if (moveTimer.Tick(Time.deltaTime, out float moveDeltaTime))
+            if (stepTimer.Tick(Time.deltaTime, out float stepDeltaTime))
             {
-                if (TryMove())
+                Step(stepDeltaTime);
+                ExtendedKalmanFilter.State state = bestEkf.GetState();
+            }
+
+            if (currentPath != null)
+            {
+                if (moveTimer.Tick(Time.deltaTime, out float moveDeltaTime))
                 {
-                    timeAtMoveStart = Time.time;
-                    positionAtMoveStart = this.transform.localPosition;
-                    anglesAtMoveStart = this.transform.localEulerAngles;
+                    if (TryMove())
+                    {
+                        timeAtMoveStart = Time.time;
+                        positionAtMoveStart = this.transform.localPosition;
+                        anglesAtMoveStart = this.transform.localEulerAngles;
+                        isMoving = true;
+                    }
+                    else
+                    {
+                        isMoving = false;
+                    }
                 }
             }
+            if (isMoving)
+            {
+                DoMovement();
+            }
+            else
+            {
+                speed = 0;
+                animator.SetFloat("speed", speed);
+            }
         }
-        
-        float motionInterpolation = (Time.time - timeAtMoveStart) / (moveTimer.GetMaxTime());
+    }
+
+    private void DoMovement()
+    {
+        float timeDiff = Time.time - timeAtMoveStart;
+        float motionInterpolation = timeDiff / (moveTimer.GetMaxTime());
+        Vector3 positionTarget = new Vector3(this.x, transform.localPosition.y, this.z);
         //Debug.Log(interpolationRatio);
         this.transform.localPosition = Vector3.Lerp(
             positionAtMoveStart,
-            new Vector3(this.x, transform.localPosition.y, this.z),
+            positionTarget,
             motionInterpolation);
+
+        // Can't just subtract the vectors because we don't want y
+        float dx = positionAtMoveStart.x - positionTarget.x;
+        float dz = positionAtMoveStart.z - positionTarget.z;
+        float distPerSec = Mathf.Max(0, (Mathf.Sqrt(dx * dx + dz * dz) - 1)) / moveTimer.GetMaxTime();
         
-        float angleInterpolation = (Time.time - timeAtMoveStart) / (moveTimer.GetMaxTime() / 2);
+        speed += 1f * Time.deltaTime;
+
+        animator.SetFloat("speed", speed);
+        //Debug.Log(speed);
+
+        timeMod = Mathf.Max(minTimeMod, timeMod * Mathf.Pow(timeDecreasePerSec, 1 + timeDiff));
+        moveTimer.SetMaxTime(Constants.Timing.MOVE_TIME * timeMod);
+        stepTimer.SetMaxTime(Constants.Timing.SCAN_TIME * timeMod);
+
+        float angleInterpolation = timeDiff / (moveTimer.GetMaxTime() * 0.75f);
         float angle = Helper.ToDegrees(Mathf.Atan2(
             this.x - positionAtMoveStart.x,
             this.z - positionAtMoveStart.z));
 
-        if (angle > 180)
+        if (angle < 0)
+        {
+            angle += 360;
+        }
+
+        if (angle - anglesAtMoveStart.y > 180)
         {
             angle -= 360;
         }
-        if (anglesAtMoveStart.y > 180)
-        {
-            anglesAtMoveStart = new Vector3(
-                anglesAtMoveStart.x,
-                anglesAtMoveStart.y - 360,
-                anglesAtMoveStart.z);
-        }
 
-        //Debug.Log(anglesAtMoveStart.y + " -> " + angle);
         this.transform.localEulerAngles = Vector3.Lerp(
             anglesAtMoveStart,
             new Vector3(0, angle, 0),
@@ -200,7 +253,7 @@ public class SoundListener : MonoBehaviour
         {
             currentPath.Dequeue(); // Remove starting position
         }
-        PathPlanner.instance.DrawPath(path);
+        PathPlanner.instance.DrawPath(path, grid);
         StartCoroutine(DelayedPathPlanning(timeBeforePlanning));
         //StartPathPlanning(ekf.GetState());
     }

@@ -13,17 +13,30 @@ public class PathPlanner : Singleton<PathPlanner>
     public PathFoundEvent OnPathFound;
     public PathFoundEvent OnPathNotFound;
 
-    public void DrawPath(List<Point> path)
+    public void DrawPath(List<Point> path, TerrainGrid grid)
     {
         int len = path.Count;
-        Vector3[] positions = new Vector3[len];
+        List<Vector3> positions = new List<Vector3>();
         for (int i = 0; i < len; i++)
         {
             Point point = path[i];
-            positions[i] = new Vector3(point.x, 0, point.z);
+            if (grid.IsFree(point.x, point.z))
+            {
+                positions.Add(PointToVector3(point));
+            }
+            else // Cull path except for end after can't move
+            {
+                positions.Add(PointToVector3(path[len - 1]));
+                break;
+            }
         }
-        pathEstimate.positionCount = len;
-        pathEstimate.SetPositions(positions);
+        pathEstimate.positionCount = positions.Count;
+        pathEstimate.SetPositions(positions.ToArray());
+    }
+
+    private Vector3 PointToVector3(Point p)
+    {
+        return new Vector3(p.x, 1f, p.z);
     }
 
     public IEnumerator GetPath(TerrainGrid grid, Point start, Point end)

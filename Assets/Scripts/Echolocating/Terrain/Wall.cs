@@ -29,6 +29,21 @@ public class Wall : TerrainTile
         materialRenderer.material.color = Constants.Colors.WALL_TOTAL_OFF;
     }
 
+    protected override void SetDefaultColor()
+    {
+        materialRenderer.material.color = Constants.Colors.WALL_DEFAULT;
+    }
+
+    protected override int SetLayerOn()
+    {
+        return Constants.Layers.WALL_ON;
+    }
+
+    protected override int SetLayerOff()
+    {
+        return Constants.Layers.WALL_OFF;
+    }
+
     /*
     protected override void React(EchoSource source)
     {

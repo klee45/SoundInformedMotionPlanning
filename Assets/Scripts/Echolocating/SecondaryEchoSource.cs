@@ -59,7 +59,7 @@ public class SecondaryEchoSource : EchoSource
         Vector3 direction = mainSourcePos - terrainPos;
         //Debug.Log(direction);
 
-        int bitmap = (1 << Constants.Layers.TERRAIN_ON | 1 << Constants.Layers.TERRAIN_OFF);
+        int bitmap = (1 << Constants.Layers.WALL_ON | 1 << Constants.Layers.WALL_OFF);
 
         RaycastHit[] hits = Physics.RaycastAll(terrainPos, direction.normalized, direction.magnitude, bitmap);
         float mod = Mathf.Pow(1 + hits.Length, 2);

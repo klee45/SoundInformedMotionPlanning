@@ -5,10 +5,18 @@ using UnityEngine;
 
 public class Constants : MonoBehaviour
 {
+    public static class Timing
+    {
+        public const float STEP_TIME = 1.20f;
+        public const float MOVE_TIME = 3.00f;
+        public const float SCAN_TIME = 5.00f;
+    }
+
     // Debug --------------------------------------------------------
     public static class Debug
     {
         public static readonly bool SHOW_ECHOLOCATION_MESSAGES = false;
+        public static readonly bool DO_COLOR_WALLS = false; 
     }
 
     // Extended Kalman Fitler ---------------------------------------
@@ -45,8 +53,8 @@ public class Constants : MonoBehaviour
             W_SOURCE_ERROR * W_SOURCE_ERROR, // w_s
         }.ToArray();
 
-        public const double DISTANCE_ERROR = 2e-0;
-        public static double ANGLE_ERROR = Math.Sqrt(2 * Math.PI / 180f);
+        public const double DISTANCE_ERROR = 3e-0;
+        public static double ANGLE_ERROR = Math.Sqrt(3 * Math.PI / 180f);
 
         public static readonly double[] OBSERVATION_COVARIANCE_DEFAULT = new List<double>
         {
@@ -62,8 +70,10 @@ public class Constants : MonoBehaviour
         public const int SOURCE_ON = 8;
         public const int SOURCE_OFF = 9;
 
-        public const int TERRAIN_ON = 10;
-        public const int TERRAIN_OFF = 11;
+        public const int WALL_ON = 10;
+        public const int WALL_OFF = 11;
+        public const int FLOOR_ON = 16;
+        public const int FLOOR_OFF = 17;
 
         public const int TERRAIN_RAYCAST = 13;
     }
@@ -79,8 +89,8 @@ public class Constants : MonoBehaviour
         public const float ECHOLOCATE_RATE = 2f; // 1/10th of the total sets per update
         public const int NOISY_MAP_RANGE = 0; // 5x5 range around hit
 
-        public const float WAVE_TIME = 0.5f;
-        public const float ENABLE_TIME = 1.0f;
+        public const float WAVE_DURATION = 0.5f;
+        public const float TERRAIN_DISABLED_DURATION = 1.0f;
     }
 
     // Colors -------------------------------------------------------
@@ -98,6 +108,9 @@ public class Constants : MonoBehaviour
         private const float TERRAIN_ON = 0.2f;
         private const float TERRAIN_OFF = 0.1f;
         private const float TERRAIN_TOTAL_OFF = 0.05f;
+
+        public static Color WALL_DEFAULT = new Color(0.2f, 0.2f, 0.2f);
+        public static Color FLOOR_DEFAULT = new Color(0.1f, 0.1f, 0.1f);
 
         public static Color WALL_ON = new Color(TERRAIN_ON, TERRAIN_ON / 2, TERRAIN_ON / 2, TERRAIN_OPACITY);
         public static Color WALL_OFF = new Color(TERRAIN_OFF, 0, 0, TERRAIN_OPACITY);

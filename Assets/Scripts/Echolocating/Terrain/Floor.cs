@@ -29,4 +29,18 @@ public class Floor : TerrainTile
         materialRenderer.material.color = Constants.Colors.FLOOR_TOTAL_OFF;
     }
 
+    protected override void SetDefaultColor()
+    {
+        materialRenderer.material.color = Constants.Colors.FLOOR_DEFAULT;
+    }
+
+    protected override int SetLayerOn()
+    {
+        return Constants.Layers.FLOOR_ON;
+    }
+
+    protected override int SetLayerOff()
+    {
+        return Constants.Layers.FLOOR_OFF;
+    }
 }

@@ -5,11 +5,14 @@ using UnityEngine;
 public class PrimaryEchoSource : EchoSource
 {
     [SerializeField]
-    private NoisyGrid grid;
+    private AudioSource echoSound;
+
     [SerializeField]
-    private float timeBetweenScans = 1f;
+    private NoisyGrid grid;
 
     private float delay = 1f;
+
+    private bool isActive = false;
 
     protected override void Awake()
     {
@@ -22,13 +25,21 @@ public class PrimaryEchoSource : EchoSource
         //StartCoroutine(Wait(3));
     }
 
+    public void Activate(bool val)
+    {
+        this.isActive = val;
+    }
+
     private void Update()
     {
-        delay -= Time.deltaTime;
-        if (delay <= 0)
+        if (isActive)
         {
-            delay = timeBetweenScans + delay;
-            Emit();
+            delay -= Time.deltaTime;
+            if (delay <= 0)
+            {
+                delay = Constants.Timing.SCAN_TIME + delay;
+                Emit();
+            }
         }
     }
 
@@ -39,6 +50,7 @@ public class PrimaryEchoSource : EchoSource
 
     protected override void Emit()
     {
+        echoSound.Play();
         Vector3 pos = transform.localPosition;
         grid.SetFree(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.z));
 
