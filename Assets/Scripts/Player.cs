@@ -26,7 +26,7 @@ public class Player : MonoBehaviour
         float v = Input.GetAxis("Vertical");
 
         Vector3 tempVect = new Vector3(h, 0, v);
-
+        
         animator.SetFloat("speed", tempVect.magnitude);
 
         tempVect = tempVect.normalized * speed * Time.deltaTime;

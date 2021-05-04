@@ -12,13 +12,6 @@ public class Constants : MonoBehaviour
         public const float SCAN_TIME = 5.00f;
     }
 
-    // Debug --------------------------------------------------------
-    public static class Debug
-    {
-        public static readonly bool SHOW_ECHOLOCATION_MESSAGES = false;
-        public static readonly bool DO_COLOR_WALLS = false; 
-    }
-
     // Extended Kalman Fitler ---------------------------------------
     public static class Kalman
     {

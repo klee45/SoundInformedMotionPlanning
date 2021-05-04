@@ -23,7 +23,7 @@ public abstract class TerrainTile : MonoBehaviour, ICanDisable
 
     private void Start()
     {
-        if (Constants.Debug.DO_COLOR_WALLS)
+        if (SceneVariables.instance.DO_COLOR_WALLS)
         {
             SetColorOn();
         }
@@ -62,7 +62,7 @@ public abstract class TerrainTile : MonoBehaviour, ICanDisable
     private IEnumerator DelayOn()
     {
         yield return new WaitForSeconds(Constants.Values.TERRAIN_DISABLED_DURATION);
-        if (Constants.Debug.DO_COLOR_WALLS)
+        if (SceneVariables.instance.DO_COLOR_WALLS)
         {
             SetColorOn();
         }
@@ -81,7 +81,7 @@ public abstract class TerrainTile : MonoBehaviour, ICanDisable
     {
         if (!totalOff)
         {
-            if (Constants.Debug.DO_COLOR_WALLS)
+            if (SceneVariables.instance.DO_COLOR_WALLS)
             {
                 SetColorOff();
             }
@@ -92,7 +92,7 @@ public abstract class TerrainTile : MonoBehaviour, ICanDisable
 
     public void TurnOffPermanent()
     {
-        if (Constants.Debug.DO_COLOR_WALLS)
+        if (SceneVariables.instance.DO_COLOR_WALLS)
         {
             SetColorOffPermanent();
         }

@@ -32,7 +32,7 @@ public abstract class EchoSource : MonoBehaviour, ICanDisable
 
         if (Physics.Raycast(pos, direction.normalized, out hit, direction.magnitude, bitmap))
         {
-            if (Constants.Debug.SHOW_ECHOLOCATION_MESSAGES)
+            if (SceneVariables.instance.SHOW_ECHOLOCATION_MESSAGES)
             {
                 Debug.Log("Raycast to " + this.name + " from " + targetName + " hit " + hit.collider.name);
             }
@@ -40,7 +40,7 @@ public abstract class EchoSource : MonoBehaviour, ICanDisable
         }
         else
         {
-            if (Constants.Debug.SHOW_ECHOLOCATION_MESSAGES)
+            if (SceneVariables.instance.SHOW_ECHOLOCATION_MESSAGES)
             {
                 Debug.Log("Raycast to " + this.name + " from " + targetName + " success");
             }

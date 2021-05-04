@@ -59,7 +59,7 @@ public class NoisyGrid : TerrainGrid
             }
         }
         Redraw();
-        if (Constants.Debug.SHOW_ECHOLOCATION_MESSAGES)
+        if (SceneVariables.instance.SHOW_ECHOLOCATION_MESSAGES)
         {
             Print();
         }

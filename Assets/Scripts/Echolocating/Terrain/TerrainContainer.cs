@@ -22,6 +22,11 @@ public class TerrainContainer : Singleton<TerrainContainer>
     private SecondaryEchoSource secondaryEchoSourcePrefab;
 
     [SerializeField]
+    private GameObject robot;
+    [SerializeField]
+    private GameObject player;
+
+    [SerializeField]
     private GridVisualizer visualizer;
     [SerializeField]
     private int width, height;
@@ -98,7 +103,7 @@ public class TerrainContainer : Singleton<TerrainContainer>
 
     private void GenerateFromText()
     {
-        List<List<int>> arr = new List<List<int>>();
+        List<List<char>> arr = new List<List<char>>();
 
         string[] lines = text.text.Split("\n"[0]);
         int width = 0;
@@ -108,11 +113,11 @@ public class TerrainContainer : Singleton<TerrainContainer>
             string[] characters = lines[i].Split('\t');
             int length = characters.Length;
 
-            List<int> lst = new List<int>();
+            List<char> lst = new List<char>();
             for (int j = 0; j < length; j++)
             {
                 // Debug.Log(character);
-                lst.Add(int.Parse(characters[j]));
+                lst.Add(characters[j][0]);
             }
             if (length > width)
             {
@@ -138,18 +143,28 @@ public class TerrainContainer : Singleton<TerrainContainer>
                 TerrainTile tile;
                 switch (character)
                 {
-                    case 0:
+                    case '0':
                         tile = CreateFloor(x, z);
                         val = 0;
                         break;
-                    case 1:
+                    case '1':
                         tile = CreateWall(x, z);
                         val = 1;
                         break;
-                    case 2:
+                    case '2':
                         tile = CreateFloor(x, z);
                         val = 0;
                         CreateSecondarySoundSource(x, z);
+                        break;
+                    case 'p':
+                        player.transform.localPosition = new Vector3(x, 0, z);
+                        tile = CreateFloor(x, z);
+                        val = 0;
+                        break;
+                    case 'r':
+                        robot.transform.localPosition = new Vector3(x, 0, z);
+                        tile = CreateFloor(x, z);
+                        val = 0;
                         break;
                     default:
                         Debug.LogWarning("Map file has invalid character " + character);
