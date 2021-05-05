@@ -45,7 +45,7 @@ public class TerrainGrid : MonoBehaviour
                     {
                         int xPos = xClamp + i;
                         int zPos = zClamp + j;
-                        if (IsValidTile(xPos, zPos) && IsFree(xPos, zPos))
+                        if (IsValidTile(xPos, zPos) && IsFreeTile(xPos, zPos))
                         {
                             return new Point(xPos, zPos);
                         }
@@ -56,7 +56,12 @@ public class TerrainGrid : MonoBehaviour
         }
     }
 
-    public bool IsFree(int x, int z)
+    public bool IsValidAndFreeTile(int x, int z)
+    {
+        return IsValidTile(x, z) && IsFreeTile(x, z);
+    }
+
+    public bool IsFreeTile(int x, int z)
     {
         return grid[x, z] <= Constants.Values.FOUND_FREE;
     }
@@ -86,7 +91,7 @@ public class TerrainGrid : MonoBehaviour
         return validPoints;
     }
 
-    protected bool IsValidTile(int x, int z)
+    public bool IsValidTile(int x, int z)
     {
         return x >= 0 && z >= 0 && x < grid.GetLength(0) && z < grid.GetLength(1);
     }

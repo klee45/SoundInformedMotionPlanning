@@ -5,7 +5,7 @@ using UnityEngine;
 public class PathPlanner : Singleton<PathPlanner>
 {
     [SerializeField]
-    private LineRenderer pathEstimate;
+    private PathVisualization pathVisual;
 
     private List<Point> path;
 
@@ -15,28 +15,7 @@ public class PathPlanner : Singleton<PathPlanner>
 
     public void DrawPath(List<Point> path, TerrainGrid grid)
     {
-        int len = path.Count;
-        List<Vector3> positions = new List<Vector3>();
-        for (int i = 0; i < len; i++)
-        {
-            Point point = path[i];
-            if (grid.IsFree(point.x, point.z))
-            {
-                positions.Add(PointToVector3(point));
-            }
-            else // Cull path except for end after can't move
-            {
-                positions.Add(PointToVector3(path[len - 1]));
-                break;
-            }
-        }
-        pathEstimate.positionCount = positions.Count;
-        pathEstimate.SetPositions(positions.ToArray());
-    }
-
-    private Vector3 PointToVector3(Point p)
-    {
-        return new Vector3(p.x, 1f, p.z);
+        pathVisual.DrawPath(path, grid);
     }
 
     public IEnumerator GetPath(TerrainGrid grid, Point start, Point end)
@@ -124,6 +103,9 @@ public class PathPlanner : Singleton<PathPlanner>
         OnPathNotFound?.Invoke(null);
         yield return null;
     }
+
+    public void ShowVisual() { pathVisual.Show(); }
+    public void HideVisual() { pathVisual.Hide(); }
 
     private static float GetHScore(Point p, Point end)
     {

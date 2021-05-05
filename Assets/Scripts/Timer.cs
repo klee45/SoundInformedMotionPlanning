@@ -37,19 +37,19 @@ public class Timer : MonoBehaviour
         Awake();
     }
 
-    public virtual bool Tick(float deltaTime, out float time)
+    public virtual bool Tick(float deltaTime, out float current)
     {
-        return TickHelper(deltaTime, out time);
+        return TickHelper(deltaTime, out current);
     }
 
-    protected bool TickHelper(float deltaTime, out float time)
+    protected bool TickHelper(float deltaTime, out float current)
     {
         if (running)
         {
             currentTime += deltaTime;
             if (currentTime >= maxTime)
             {
-                time = currentTime;
+                current = currentTime;
                 if (doesReset)
                 {
                     if (overflows)
@@ -65,7 +65,7 @@ public class Timer : MonoBehaviour
                 return true;
             }
         }
-        time = -1;
+        current = -1;
         return false;
     }
 

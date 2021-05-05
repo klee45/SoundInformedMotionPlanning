@@ -15,10 +15,7 @@ public class Constants : MonoBehaviour
     // Extended Kalman Fitler ---------------------------------------
     public static class Kalman
     {
-        public const double X_SOURCE_START = 1;
-        public const double Y_SOURCE_START = 2;
-        public static readonly double THETA_SOURCE_START = 0;
-        public const double V_SOURCE_START = 0.5;
+        public const double V_SOURCE_START = 0;
         public const double W_SOURCE_START = 0;
 
         public const double X_ROBOT_ERROR = 1e-1;
@@ -46,14 +43,20 @@ public class Constants : MonoBehaviour
             W_SOURCE_ERROR * W_SOURCE_ERROR, // w_s
         }.ToArray();
 
-        public const double DISTANCE_ERROR = 3e-0;
-        public static double ANGLE_ERROR = Math.Sqrt(3 * Math.PI / 180f);
+        public const double MAX_DISTANCE_FOR_ERROR = 30;
+        public const double DISTANCE_ERROR = 2e-0;
+        public static double ANGLE_ERROR = Math.Sqrt(2 * Math.PI / 180f);
 
         public static readonly double[] OBSERVATION_COVARIANCE_DEFAULT = new List<double>
         {
             DISTANCE_ERROR * DISTANCE_ERROR, // r_s
             ANGLE_ERROR * ANGLE_ERROR, // phi_s
         }.ToArray();
+    }
+
+    public static class MonteCarloTree
+    {
+        public const float FORGETTING_FACTOR = 0.9f;
     }
 
     // Layers -------------------------------------------------------

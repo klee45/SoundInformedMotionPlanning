@@ -32,7 +32,17 @@ public class SoundListener : MonoBehaviour
     [SerializeField]
     private NoisyGrid grid;
 
-    private Queue<Point> currentPath;
+    [SerializeField]
+    private int aStarSteps = 4;
+    [SerializeField]
+    private int monteCarloSteps = 4;
+
+    private int stepsDuringMode;
+
+    private Queue<Point> currentAStarPath;
+    private Queue<Point> currentMonteCarloPath;
+
+    private bool isMonteCarloMode = false;
 
     private int x;
     private int z;
@@ -70,6 +80,7 @@ public class SoundListener : MonoBehaviour
     {
         speed = 0;
         startingTime = Time.time;
+        stepsDuringMode = 0;
 
         //stepTimer.SetMaxTime(startStepTime);
         stepTimer.SetMaxTime(Constants.Timing.STEP_TIME);
@@ -81,7 +92,7 @@ public class SoundListener : MonoBehaviour
         this.z = Mathf.RoundToInt(pos.z);
 
         StartPathPlanning();
-
+        
         PathPlanner.instance.OnPathFound += GetPath;
         PathPlanner.instance.OnPathNotFound += TryPathPlanningAgain;
     }
@@ -99,7 +110,7 @@ public class SoundListener : MonoBehaviour
             {
                 int sourceX = UnityEngine.Random.Range(0, grid.GetWidth());
                 int sourceY = UnityEngine.Random.Range(0, grid.GetHeight());
-                ekf.Initialize(GenerateInitialState(source, sourceX, sourceY));
+                ekf.Initialize(GenerateInitialState(source, sourceX, sourceY), true);
             }
             bestEkf = ekfs[0];
             StartCoroutine(DelayedPathPlanning(0.1f));
@@ -138,7 +149,7 @@ public class SoundListener : MonoBehaviour
                 ExtendedKalmanFilter.State state = bestEkf.GetState();
             }
 
-            if (currentPath != null)
+            if (currentAStarPath != null)
             {
                 if (canMove)
                 {
@@ -150,6 +161,8 @@ public class SoundListener : MonoBehaviour
                             positionAtMoveStart = this.transform.localPosition;
                             anglesAtMoveStart = this.transform.localEulerAngles;
                             isMoving = true;
+                            stepsDuringMode++;
+                            CheckModeSwitch();
                         }
                         else
                         {
@@ -226,21 +239,72 @@ public class SoundListener : MonoBehaviour
             z);
     }
 
+    public Point GetPos()
+    {
+        return new Point(x, z);
+    }
+
     private bool TryMove()
     {
-        if (currentPath.Count > 0)
+        Queue<Point> path;
+        if (isMonteCarloMode)
         {
-            Point p = currentPath.Peek();
-            if (grid.IsFree(p.x, p.z))
+            path = currentMonteCarloPath;
+        }
+        else
+        {
+            path = currentAStarPath;
+        }
+        if (path.Count > 0)
+        {
+            Point p = path.Peek();
+            if (grid.IsFreeTile(p.x, p.z))
             {
                 this.x = p.x;
                 this.z = p.z;
-                currentPath.Dequeue();
+                path.Dequeue();
                 //Debug.LogWarning(string.Format("{0}, {1}", this.x, this.z));
                 return true;
             }
         }
         return false;
+    }
+
+    private void CheckModeSwitch()
+    {
+        if (isMonteCarloMode)
+        {
+            if (stepsDuringMode >= monteCarloSteps)
+            {
+                isMonteCarloMode = false;
+                ShowAStarPath();
+                stepsDuringMode = 0;
+            }
+        }
+        else
+        {
+            if (stepsDuringMode >= aStarSteps)
+            {
+                isMonteCarloMode = true;
+                MCTree.instance.ResetTree();
+                MCTree.instance.Search();
+                currentMonteCarloPath = MCTree.instance.GetPath();
+                ShowMonteCarloPath();
+                stepsDuringMode = 0;
+            }
+        }
+    }
+
+    private void ShowAStarPath()
+    {
+        PathPlanner.instance.ShowVisual();
+        MCTree.instance.HideVisual();
+    }
+
+    private void ShowMonteCarloPath()
+    {
+        PathPlanner.instance.HideVisual();
+        MCTree.instance.ShowVisual();
     }
 
     //private int GetX() { return Mathf.RoundToInt(transform.localPosition.x); }
@@ -262,10 +326,10 @@ public class SoundListener : MonoBehaviour
     {
         //Debug.LogWarning(string.Join(", ", path));
 
-        currentPath = new Queue<Point>(path);
-        if (currentPath.Count > 0)
+        currentAStarPath = new Queue<Point>(path);
+        if (currentAStarPath.Count > 0)
         {
-            currentPath.Dequeue(); // Remove starting position
+            currentAStarPath.Dequeue(); // Remove starting position
         }
         if (isActive)
         {

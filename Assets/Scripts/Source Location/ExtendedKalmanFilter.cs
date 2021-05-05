@@ -23,36 +23,31 @@ public class ExtendedKalmanFilter : MonoBehaviour
     private State state; // x : m x 1
     private Observation observation; // z : n x 1
 
-    private List<State> pastStates;
-    private List<Observation> pastObservations;
-    private List<Matrix> pastPredictionErrors;
-
     private EstimateVisual visual;
+    private bool doVisualize;
 
-    private void Awake()
+    public void Initialize(State state, bool doVisualize)
     {
-        pastStates = new List<State>();
-        pastObservations = new List<Observation>();
-        pastPredictionErrors = new List<Matrix>();
-        visual = GetComponent<EstimateVisual>();
+        Initialize(state, InitializePredictionError(), doVisualize);
     }
 
-    public void Initialize(State state)
+    public void Initialize(State state, Matrix predictionError, bool doVisualize)
     {
-        this.predictionError = InitializePredictionError();
         this.state = state;
+        this.predictionError = predictionError;
         this.processCovariance = SetupProcessCovariance();
         this.observationCovariance = SetupObservationCovariance();
-        visual.UpdatePosition(state);
+        this.doVisualize = doVisualize;
+        if (doVisualize)
+        {
+            visual = GetComponent<EstimateVisual>();
+            visual.UpdatePosition(state);
+        }
     }
 
     public void Step(Observation observation, double robotX, double robotY, double robotTheta, float deltaTime)
     {
         this.observation = observation;
-
-        pastStates.Add(state);
-        pastObservations.Add(observation);
-        pastPredictionErrors.Add(predictionError);
 
         // Preliminary calculations
         Matrix processJacobian = CalculateProcessJacobian(deltaTime);
@@ -95,8 +90,11 @@ public class ExtendedKalmanFilter : MonoBehaviour
         this.predictionError = UpdatePredictionError(
             observationJacobian,
             gain);
-
-        visual.UpdatePosition(state);
+        
+        if (doVisualize)
+        {
+            visual.UpdatePosition(state);
+        }
 
         //Debug.Log("State after update : " + state.ToString());
         //Debug.Log("Prediction error after update :\n" + predictionError.ToString());
@@ -125,9 +123,6 @@ public class ExtendedKalmanFilter : MonoBehaviour
     public Observation GetCurrentObservation() { return observation; }
     public Matrix GetPredictionError() { return predictionError; }
 
-    public List<State> GetStateHistory() { return pastStates; }
-    public List<Observation> GetObservationHistory() { return pastObservations; }
-    public List<Matrix> GetPredictionErrorHistory() { return pastPredictionErrors; }
     #endregion
     
     #region Initialization helpers
@@ -343,16 +338,16 @@ public class ExtendedKalmanFilter : MonoBehaviour
     {
         private readonly double[] vals;
 
-        public State(double xRobot, double yRobot, double thetaRobot,
-                     double xSource, double ySource, double thetaSource,
+        public State(double xRobot, double zRobot, double thetaRobot,
+                     double xSource, double zSource, double thetaSource,
                      double linVelSource, double angVelSource)
         {
             vals = new double[8];
             vals[0] = xRobot;
-            vals[1] = yRobot;
+            vals[1] = zRobot;
             vals[2] = thetaRobot;
             vals[3] = xSource;
-            vals[4] = ySource;
+            vals[4] = zSource;
             vals[5] = thetaSource;
             vals[6] = linVelSource;
             vals[7] = angVelSource;

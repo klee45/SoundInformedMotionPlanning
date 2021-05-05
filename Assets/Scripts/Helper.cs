@@ -2,9 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 
 public static class Helper
 {
+    public static T GetRandomElement<T>(this List<T> lst)
+    {
+        return lst[UnityEngine.Random.Range(0, lst.Count - 1)];
+    }
+
+    public static int GetWeightedRandom(this List<float> weights)
+    {
+        List<float> cumulativeWeights = new List<float>();
+        cumulativeWeights.Add(weights[0]);
+
+        for (int i = 1; i < weights.Count; i++)
+        {
+            cumulativeWeights.Add(cumulativeWeights.Last() + weights[i]);
+        }
+
+        float val = UnityEngine.Random.Range(0, cumulativeWeights.Last());
+
+        for (int i = 0; i < cumulativeWeights.Count; i++)
+        {
+            if (cumulativeWeights[i] <= val)
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public static float Clamp(this float f, float min, float max)
     {
         return Mathf.Min(max, Mathf.Max(min, f));
