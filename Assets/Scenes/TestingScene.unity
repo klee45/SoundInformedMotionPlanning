@@ -798,7 +798,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c85361f0a2215341a51d38444591063, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2
+  speed: 3
   autoMove: 1
   automoveTimer: {fileID: 440417047}
 --- !u!114 &440417047
@@ -813,7 +813,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 932a29e2f3f142848bdb584b0c3a9a0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxTime: 1.5
+  maxTime: 2
   currentTime: 0
   running: 1
   doesReset: 1
@@ -1346,7 +1346,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isPresistant: 1
   uctTradeoff: 0.5
-  timeBudget: 0.01
+  timeBudget: 0.05
   prefab: {fileID: 4664067727121072518, guid: c0f676be5e95e0841ba7c275d49f6635, type: 3}
   listener: {fileID: 633132287}
   pathVisual: {fileID: 271480480}
