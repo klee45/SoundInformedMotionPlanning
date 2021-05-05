@@ -1,4 +1,4 @@
-Running the project -----------------------------------------------
+##Running the project
 
 The project is run on Unity version 2019.2.11f1
 This is NOT required to run the demonstration and test demo code which are contained in the builds folder
@@ -7,18 +7,18 @@ In order to run the builds, you just need to go into one of the build folders an
 
 The editor is required if you want to modify hyperparameters or generate your own maps.
 
-Source code -------------------------------------------------------
+##Source code
 
 All code is contained within the Assets/Scripts folder. All of it was written by me except for the min-heap implementation (although I did modify it), and the matrix library.
 I have placed these scripts in a subfolder labeled "Imported Libraries". That is, all libraries and imported code is placed in Assets/Scripts/Imported Libraries.
 
-Generating maps and editing parameters ----------------------------
+##Generating maps and editing parameters
 
 If you wish to modify the project parameters, you will need Unity 2019.2.11f1.
 From there open the project and enter either the demo scene (the scene shown in my project presentation), or the test scene.
 The main parameters that may be interest to modify are as follows:
 
-Editor inspector objects:
+#Editor inspector objects:
 Robot (Either scene)
 	Sound Listener script
 		A* Steps - number of A* steps before switching to Monte Carlo Tree Search
@@ -30,7 +30,7 @@ Monte Carlo Tree (TestingScene)
 		UCT Tradeoff - Tradeoff variable between exploration and exploitation (higher is more exploration)
 		Time Budget - How long the robot is allowed to use the Monte Carlo Tree search for at each attempt
 
-Scripts and other files:
+#Scripts and other files:
 Constants
 	Any of the kalman filter error values
 		These are the standard deviations for both observation and also state prediction
