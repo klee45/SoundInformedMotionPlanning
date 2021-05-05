@@ -3,6 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using static MCTree;
 
+/// <summary>
+/// Node in a Monte Carlo Tree
+/// 
+/// Controls its own entropy, reward, and
+/// kalman filter state estimation
+/// 
+/// Each node contains an extended kalman filter
+/// that it uses to update its estimate of the state
+/// and decide its entropy
+/// </summary>
 public class MCNode : MonoBehaviour
 {
     [SerializeField]

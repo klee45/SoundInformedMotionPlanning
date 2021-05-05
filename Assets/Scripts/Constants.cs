@@ -3,6 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Static class for containing constants and other variables
+/// that would not be use in the inspector
+/// </summary>
 public class Constants : MonoBehaviour
 {
     public static class Timing

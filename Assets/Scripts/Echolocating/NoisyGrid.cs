@@ -2,6 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// A grid that contains unknowns as well as true values
+/// 
+/// This grid represents the robot's understanding of the environment
+/// 
+/// Note that when a tile is found to be a wall or a floor it
+/// can not become unknown again because information only moves
+/// one way
+/// </summary>
 public class NoisyGrid : TerrainGrid
 {
     [SerializeField]

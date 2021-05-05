@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Controls the Monte Carlo tree search
+/// and manages the visualizations
+/// 
+/// Node selection and search is managed here
+/// as well as node creation
+/// </summary>
 public class MCTree : Singleton<MCTree>
 {
     [SerializeField]

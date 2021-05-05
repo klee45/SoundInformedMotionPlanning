@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Class for the echo wave collision management itself
+/// as well as some visual and behavior functions
+/// </summary>
 public class EchoWave : MonoBehaviour
 {
     private EchoSource source;

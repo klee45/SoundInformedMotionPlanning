@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Abstract class for both kinds of echo sources
+/// Controls raycast tests to self and echo emission
+/// </summary>
 public abstract class EchoSource : MonoBehaviour, ICanDisable
 {
     [SerializeField]

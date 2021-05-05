@@ -2,6 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Secondary echo sources are placed (manually)
+/// around corners on the map in order to simulate
+/// sound information traveling in such a manner
+/// 
+/// The secondary sources send information back to the
+/// primary source based on distance and if there are
+/// walls in the way
+/// </summary>
 public class SecondaryEchoSource : EchoSource
 {
     private PrimaryEchoSource initialSource;

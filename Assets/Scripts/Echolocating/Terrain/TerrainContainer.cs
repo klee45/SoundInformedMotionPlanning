@@ -2,6 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Contains all of the terrain and manages the visualization and
+/// storage of the true grid information
+/// 
+/// Also manages map generation
+/// View map.txt file to generate maps
+/// 
+/// 0 = floor
+/// 1 = wall
+/// 2 = secondary sound source (and floor)
+/// p = player
+/// r = robot
+/// </summary>
 public class TerrainContainer : Singleton<TerrainContainer>
 {
     [SerializeField]
@@ -51,28 +64,6 @@ public class TerrainContainer : Singleton<TerrainContainer>
 
         grid.Print();
         visualizer.Draw(grid);
-
-        /*
-        Heap<string> h = new Heap<string>();
-        h.Add("a", 1);
-        h.Add("b", 5);
-        h.Add("c", 0);
-        h.Add("d", 10);
-        h.Add("e", 6);
-        h.Add("f", 9);
-        h.Add("g", 12);
-        h.Add("h", -1);
-        h.Add("i", 3);
-        h.Add("j", 5);
-
-        //h.Print();
-        while (h.HasValues())
-        {
-            Heap<string>.HeapPair<string> pair = h.Remove();
-            Debug.Log(string.Format("{0}: {1}", pair.GetItem(), pair.GetValue()));
-            //h.Print();
-        }
-        */
     }
 
     private void DisableInitialGameObjects()

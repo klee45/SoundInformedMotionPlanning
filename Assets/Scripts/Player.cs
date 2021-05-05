@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Controller class for the player / tracking target
+/// With auto-move on the player moves erratically without input
+/// </summary>
 public class Player : MonoBehaviour
 {
     [SerializeField]

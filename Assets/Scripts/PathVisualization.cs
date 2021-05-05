@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Small script to allow for visualizing a path using a linerenderer
+/// </summary>
 public class PathVisualization : MonoBehaviour
 {
     private LineRenderer lineRenderer;

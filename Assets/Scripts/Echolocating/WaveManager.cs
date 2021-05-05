@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Simple class to have a place to instantiate echo waves from
+/// </summary>
 public class WaveManager : Singleton<WaveManager>
 {
     [SerializeField]

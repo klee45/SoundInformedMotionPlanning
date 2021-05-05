@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Some testing / debug variables that can be controlled
+/// through the inspector
+/// </summary>
 public class SceneVariables : Singleton<SceneVariables>
 {
     [SerializeField]

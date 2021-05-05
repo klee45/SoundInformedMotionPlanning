@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Floor tile class
+/// </summary>
 public class Floor : TerrainTile
 {
     protected override void Awake()

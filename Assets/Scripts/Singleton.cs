@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Singleton base class
+/// There are a lot of singletons in this project
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 {
     public static T instance;
@@ -16,7 +21,7 @@ public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
         }
         if (instance != null)
         {
-            Debug.LogWarning("More than one sprite manager! It's a singleton");
+            Debug.LogWarning("More than one " + name + "! It's a singleton");
             Destroy(instance);
         }
         instance = this as T;

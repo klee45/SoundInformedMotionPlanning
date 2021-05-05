@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Sampling of a gaussian distribution
+/// </summary>
 public static class Gaussian
 {
     private static System.Random random = new System.Random();

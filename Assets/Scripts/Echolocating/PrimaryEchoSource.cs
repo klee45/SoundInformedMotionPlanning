@@ -2,6 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// The main echolocator
+/// 
+/// This is the robot and where the first echo wave
+/// is generated from
+/// 
+/// Also manages making a noise and the noisy grid updating
+/// </summary>
 public class PrimaryEchoSource : EchoSource
 {
     [SerializeField]

@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Allows for the drawing of the red, green, and gray grids
+/// that depict either the noisy or true map of the environment
+/// </summary>
 public class GridVisualizer : MonoBehaviour
 {
     // Start is called before the first frame update

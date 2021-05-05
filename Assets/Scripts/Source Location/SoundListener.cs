@@ -4,6 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+/// <summary>
+/// This is an overloaded class for moving the robot
+/// towards the sound source (the player)
+/// 
+/// The robot alternates between taking the A* path (pink)
+/// and the Monte Carlo path (yellow). I believe that it would
+/// converge eventually with just the Monte Carlo path, but
+/// often it gets stuck in local minima and so it needs some
+/// outside push to get it out of those spots.
+/// 
+/// This class also controls movement animation and interpolation
+/// </summary>
 public class SoundListener : MonoBehaviour
 {
     [SerializeField]

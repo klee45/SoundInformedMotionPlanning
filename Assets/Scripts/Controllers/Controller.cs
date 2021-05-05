@@ -2,6 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Scripting controller for the demo
+/// 
+/// Turns various lights / movement options
+/// on and off
+/// 
+/// Sequence of action is
+/// 1 -> do echo ->
+/// 2 -> activate extended kalman filter ->
+/// 3 -> draw back camera to first person
+///     also for the robot and minimap ->
+/// 4 -> Turn off lights for a moment and allow for robot movement
+/// 5 -> Turn lights back to full and disable robot
+/// </summary>
 public class Controller : MonoBehaviour
 {
     [SerializeField]

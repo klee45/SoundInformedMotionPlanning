@@ -798,7 +798,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c85361f0a2215341a51d38444591063, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 3
+  speed: 2
   autoMove: 1
   automoveTimer: {fileID: 440417047}
 --- !u!114 &440417047
@@ -813,7 +813,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 932a29e2f3f142848bdb584b0c3a9a0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxTime: 2
+  maxTime: 1.5
   currentTime: 0
   running: 1
   doesReset: 1

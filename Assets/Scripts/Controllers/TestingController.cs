@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// This controller manages the testing environment
+/// and just starts things up and allows for exiting the application
+/// </summary>
 public class TestingController : MonoBehaviour
 {
     [SerializeField]

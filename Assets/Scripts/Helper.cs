@@ -4,6 +4,9 @@ using UnityEngine;
 using System;
 using System.Linq;
 
+/// <summary>
+/// Class with helpful and often used list and math functions
+/// </summary>
 public static class Helper
 {
     public static T GetRandomElement<T>(this List<T> lst)

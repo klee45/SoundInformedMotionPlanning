@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Heap implementation taken off https://weblogs.asp.net/cumpsd/371719 with some modification
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class Heap<T>
 {
     private HeapPair<T>[] binaryHeap;

@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Struct to hold a 2d point with integer values
+/// </summary>
 public readonly struct Point
 {
     public readonly int x;

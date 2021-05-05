@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Base behavior of any terrain
+/// </summary>
 public abstract class TerrainTile : MonoBehaviour, ICanDisable
 {
     protected Renderer materialRenderer;

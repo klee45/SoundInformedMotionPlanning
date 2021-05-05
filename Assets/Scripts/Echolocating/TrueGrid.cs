@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Grid with perfect information for the viewer to see
+/// </summary>
 public class TrueGrid : TerrainGrid
 {
 

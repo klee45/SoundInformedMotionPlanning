@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Implementation of A* taken from wikipedia and
+/// modified to use a min-heap for pulling cheapest f-score
+/// node
+/// 
+/// https://en.wikipedia.org/wiki/A*_search_algorithm#Description
+/// </summary>
 public class PathPlanner : Singleton<PathPlanner>
 {
     [SerializeField]

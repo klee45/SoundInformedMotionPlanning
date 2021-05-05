@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Quick script to move camera with mouse
+/// </summary>
 public class CameraControl : MonoBehaviour
 {
     [SerializeField]

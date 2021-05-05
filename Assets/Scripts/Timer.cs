@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
+/// <summary>
+/// Timer class to help manage tick events
+/// that need to be evenly spaced out
+/// </summary>
 public class Timer : MonoBehaviour
 {
     [SerializeField]

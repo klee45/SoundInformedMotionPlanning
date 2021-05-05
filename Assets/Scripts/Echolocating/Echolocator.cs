@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Class for checking all of the echolocation raycasts
+/// also schedules checks to be done so they don't clog frames
+/// </summary>
 public class Echolocator : Singleton<Echolocator>
 {
     private Queue<TerrainCheck> wallChecks;

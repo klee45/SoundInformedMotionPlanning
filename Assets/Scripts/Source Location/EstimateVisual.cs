@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Visualization class for the extended kalman filter
+/// estimates
+/// </summary>
 public class EstimateVisual : MonoBehaviour
 {
     [SerializeField]

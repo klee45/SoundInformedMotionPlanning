@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Base class for both kinds of grids
+/// 
+/// Mostly functions for accessing values
+/// </summary>
 public class TerrainGrid : MonoBehaviour
 {
     protected float[,] grid;

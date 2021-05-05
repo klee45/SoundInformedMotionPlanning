@@ -4,6 +4,16 @@ using UnityEngine;
 using MathExtended.Matrices;
 using System;
 
+/// <summary>
+/// Class for implementing extended kalman filters designed for this problem
+/// 
+/// Most of the impelemntation was inspired from tutorials from
+/// https://www.cse.sc.edu/~terejanu/files/tutorialEKF.pdf
+/// https://simondlevy.academic.wlu.edu/kalman-tutorial/the-extended-kalman-filter-an-interactive-tutorial-for-non-experts-part-14/
+/// 
+/// Tuning a kalman filter help from
+/// https://dsp.stackexchange.com/questions/31632/how-do-i-choose-the-parameters-of-a-kalman-filter
+/// </summary>
 public class ExtendedKalmanFilter : MonoBehaviour
 {
     private const int m = 8;
